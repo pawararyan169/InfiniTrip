@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Trip - INFINITRIP</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-additional.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="images/logo.png" alt="INFINITRIP Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <span style="display: none;"><i class="fas fa-globe"></i> INFINITRIP</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="destinations.html">Destinations</a></li>
+                    <li><a href="tours.html">Tours</a></li>
+                    <li><a href="booking.html" class="active">Book Now</a></li>
+                    <li><a href="vehicles.html">Vehicles</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <!-- Login/User name will be added dynamically by auth.js -->
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-overlay"></div>
+        <div class="page-header-content">
+            <h1>Book Your Journey</h1>
+            <p>Start your adventure in Kutch with INFINITRIP</p>
+        </div>
+    </section>
+
+    <!-- Booking Form Section -->
+    <section class="booking-section">
+        <div class="container">
+            <div class="booking-wrapper">
+                <div class="booking-form-container">
+                    <h2>Booking Details</h2>
+                    <form id="bookingForm" class="booking-form">
+                        <!-- Booking Type Selection -->
+                        <div class="form-group">
+                            <label for="bookingType">
+                                <i class="fas fa-tags"></i> Booking Type
+                            </label>
+                            <select id="bookingType" name="bookingType" required onchange="toggleBookingType()">
+                                <option value="tour">Tour Package</option>
+                                <option value="cab">Cab Booking Only</option>
+                            </select>
+                        </div>
+
+                        <!-- Destination Selection (for Tour Package) -->
+                        <div class="form-group" id="destinationGroup">
+                            <label for="destination">
+                                <i class="fas fa-map-marker-alt"></i> Select Destination
+                            </label>
+                            <select id="destination" name="destination">
+                                <option value="">Choose your destination</option>
+                                <option value="rann">Rann of Kutch</option>
+                                <option value="dholavira">Dholavira</option>
+                                <option value="mandvi">Mandvi Beach</option>
+                                <option value="bhuj">Bhuj</option>
+                                <option value="dhordo">Dhordo</option>
+                                <option value="road-to-heaven">Road to Heaven</option>
+                                <option value="kala-dungar">Kala Dungar (Black Hill)</option>
+                                <option value="vijay-vilas">Vijay Vilas Palace</option>
+                                <option value="aina-mahel">Aina Mahel (Palace of Mirrors)</option>
+                                <option value="kutch-museum">Kutch Museum</option>
+                                <option value="lakhpat">Lakhpat Fort</option>
+                                <option value="narayan-sarovar">Narayan Sarovar</option>
+                                <option value="koteshwar">Koteshwar</option>
+                                <option value="matana-madh">Matana Madh</option>
+                                <option value="tapkeshwari">Tapkeshwari Temple</option>
+                                <option value="pingleshwar">Pingleshwar</option>
+                                <option value="wildlife">Kutch Desert Wildlife Sanctuary</option>
+                                <option value="kadiyadhro">Kadiyadhro</option>
+                                <option value="smrutivan">Smrutivan</option>
+                                <option value="vande-mataram-memorial">Vande Mataram Memorial</option>
+                                <option value="custom">Custom Package (Multiple Destinations)</option>
+                            </select>
+                        </div>
+
+                        <!-- Vehicle Category Selection (for Cab Booking) -->
+                        <div class="form-group" id="vehicleCategoryGroup" style="display: none;">
+                            <label for="vehicleCategory">
+                                <i class="fas fa-car"></i> Vehicle Category (Seating Capacity)
+                            </label>
+                            <select id="vehicleCategory" name="vehicleCategory">
+                                <option value="">Select vehicle category</option>
+                                <option value="3-5">3-5 Seater (Sedan/Hatchback)</option>
+                                <option value="7-8">7-8 Seater (SUV/MPV)</option>
+                                <option value="10-12">10-12 Seater (Tempo Traveller)</option>
+                                <option value="15-20">15-20 Seater (Mini Bus)</option>
+                                <option value="20-40">20-40 Seater (Bus)</option>
+                            </select>
+                            <a href="vehicles.html" class="link" style="display: block; margin-top: 0.5rem; font-size: 0.9rem;">
+                                <i class="fas fa-images"></i> View Vehicle Gallery
+                            </a>
+                        </div>
+
+                        <!-- Pickup Location -->
+                        <div class="form-group">
+                            <label for="pickupLocation">
+                                <i class="fas fa-map-pin"></i> Pickup Location
+                            </label>
+                            <input type="text" id="pickupLocation" name="pickupLocation" placeholder="Enter pickup address" required>
+                        </div>
+
+                        <!-- Drop Location -->
+                        <div class="form-group">
+                            <label for="dropLocation">
+                                <i class="fas fa-map-marker-alt"></i> Drop Location
+                            </label>
+                            <input type="text" id="dropLocation" name="dropLocation" placeholder="Enter drop address" required>
+                        </div>
+
+                        <!-- Starting Point (for Tour Package) -->
+                        <div class="form-group" id="startingPointGroup">
+                            <label for="startingPoint">
+                                <i class="fas fa-route"></i> Starting Point of Journey
+                            </label>
+                            <select id="startingPoint" name="startingPoint">
+                                <option value="">Select your starting point</option>
+                                <option value="bhuj">Bhuj</option>
+                                <option value="ahmedabad">Ahmedabad</option>
+                                <option value="mumbai">Mumbai</option>
+                                <option value="delhi">Delhi</option>
+                                <option value="rajkot">Rajkot</option>
+                                <option value="gandhinagar">Gandhinagar</option>
+                                <option value="surat">Surat</option>
+                                <option value="vadodara">Vadodara</option>
+                                <option value="other">Other (Please specify in notes)</option>
+                            </select>
+                        </div>
+
+                        <!-- Travel Dates -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="pickupDate">
+                                    <i class="fas fa-calendar-alt"></i> <span id="pickupDateLabel">Pickup Date</span>
+                                </label>
+                                <input type="date" id="pickupDate" name="pickupDate" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="pickupTime">
+                                    <i class="fas fa-clock"></i> Pickup Time
+                                </label>
+                                <input type="time" id="pickupTime" name="pickupTime" required>
+                            </div>
+                        </div>
+
+                        <!-- Return Date (for Tour Package) -->
+                        <div class="form-row" id="returnDateGroup">
+                            <div class="form-group">
+                                <label for="returnDate">
+                                    <i class="fas fa-calendar-check"></i> Return Date
+                                </label>
+                                <input type="date" id="returnDate" name="returnDate">
+                            </div>
+                            <div class="form-group">
+                                <label for="returnTime">
+                                    <i class="fas fa-clock"></i> Return Time (Optional)
+                                </label>
+                                <input type="time" id="returnTime" name="returnTime">
+                            </div>
+                        </div>
+
+                        <!-- Number of Travelers -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="adults">
+                                    <i class="fas fa-user"></i> Adults
+                                </label>
+                                <input type="number" id="adults" name="adults" min="1" max="20" value="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="children">
+                                    <i class="fas fa-child"></i> Children (Below 12)
+                                </label>
+                                <input type="number" id="children" name="children" min="0" max="20" value="0">
+                            </div>
+                        </div>
+
+                        <!-- Package Type (for Tour Package) -->
+                        <div class="form-group" id="packageTypeGroup">
+                            <label for="packageType">
+                                <i class="fas fa-box"></i> Package Type
+                            </label>
+                            <select id="packageType" name="packageType">
+                                <option value="">Select package type</option>
+                                <option value="basic">Basic Package (Transport + Guide)</option>
+                                <option value="premium">Premium Package (Transport + Guide + Meals + Hotel)</option>
+                                <option value="luxury">Luxury Package (All Inclusive + Premium Hotels)</option>
+                            </select>
+                        </div>
+
+                        <!-- Transportation (for Tour Package) -->
+                        <div class="form-group" id="transportationGroup">
+                            <label for="transportation">
+                                <i class="fas fa-car"></i> Transportation Preference
+                            </label>
+                            <select id="transportation" name="transportation">
+                                <option value="">Select transportation</option>
+                                <option value="bus">AC Bus</option>
+                                <option value="car">Private Car</option>
+                                <option value="suv">SUV</option>
+                                <option value="tempo">Tempo Traveller</option>
+                                <option value="self">Self Drive</option>
+                            </select>
+                        </div>
+
+                        <!-- Accommodation (for Tour Package) -->
+                        <div class="form-group" id="accommodationGroup">
+                            <label for="accommodation">
+                                <i class="fas fa-hotel"></i> Accommodation Type
+                            </label>
+                            <select id="accommodation" name="accommodation">
+                                <option value="">Select accommodation (Optional)</option>
+                                <option value="tent">Desert Tent (Rann Utsav Style)</option>
+                                <option value="budget">Budget Hotel</option>
+                                <option value="standard">Standard Hotel</option>
+                                <option value="premium">Premium Hotel</option>
+                                <option value="resort">Resort</option>
+                            </select>
+                        </div>
+
+                        <!-- Personal Information -->
+                        <h3 class="form-section-title">Personal Information</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName">First Name</label>
+                                <input type="text" id="firstName" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" id="lastName" name="lastName" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <textarea id="address" name="address" rows="3" required></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City</label>
+                                <input type="text" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="pincode">Pincode</label>
+                                <input type="text" id="pincode" name="pincode" pattern="[0-9]{6}" required>
+                            </div>
+                        </div>
+
+                        <!-- Special Requirements -->
+                        <div class="form-group">
+                            <label for="specialRequirements">
+                                <i class="fas fa-comments"></i> Special Requirements or Notes
+                            </label>
+                            <textarea id="specialRequirements" name="specialRequirements" rows="4" placeholder="Any special dietary requirements, accessibility needs, or other requests..."></textarea>
+                        </div>
+
+                        <!-- Emergency Contact -->
+                        <h3 class="form-section-title">Emergency Contact</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="emergencyName">Contact Name</label>
+                                <input type="text" id="emergencyName" name="emergencyName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="emergencyPhone">Contact Phone</label>
+                                <input type="tel" id="emergencyPhone" name="emergencyPhone" required>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="form-group checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="terms" name="terms" required>
+                                <span>I agree to the <a href="#" class="link">Terms and Conditions</a> and <a href="#" class="link">Privacy Policy</a></span>
+                            </label>
+                        </div>
+
+                        <!-- Price Summary -->
+                        <div class="price-summary" id="priceSummary">
+                            <h3>Price Summary</h3>
+                            <div class="price-details">
+                                <div class="price-item">
+                                    <span>Package:</span>
+                                    <span id="packagePrice">₹0</span>
+                                </div>
+                                <div class="price-item">
+                                    <span>Transportation:</span>
+                                    <span id="transportPrice">₹0</span>
+                                </div>
+                                <div class="price-item">
+                                    <span>Accommodation:</span>
+                                    <span id="accommodationPrice">₹0</span>
+                                </div>
+                                <div class="price-item total">
+                                    <span>Total Amount:</span>
+                                    <span id="totalPrice">₹0</span>
+                                </div>
+                            </div>
+                            <p class="price-note">* Final price may vary based on selected options. Our team will confirm the exact amount.</p>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <i class="fas fa-paper-plane"></i> Submit Booking Request
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Day-wise Itinerary Preview -->
+                <div class="itinerary-preview-section" id="itineraryPreview" style="display: none;">
+                    <h2><i class="fas fa-calendar-check"></i> Your Day-wise Itinerary</h2>
+                    <div id="itineraryContent"></div>
+                </div>
+
+                <!-- Booking Info Sidebar -->
+                <div class="booking-info-sidebar">
+                    <div class="info-card">
+                        <h3><i class="fas fa-info-circle"></i> Booking Information</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Instant confirmation</li>
+                            <li><i class="fas fa-check"></i> Flexible cancellation</li>
+                            <li><i class="fas fa-check"></i> Best price guarantee</li>
+                            <li><i class="fas fa-check"></i> 24/7 customer support</li>
+                        </ul>
+                    </div>
+
+                    <div class="info-card">
+                        <h3><i class="fas fa-phone-alt"></i> Need Help?</h3>
+                        <p>Call us for assistance:</p>
+                        <p class="phone-number">+91 95124 95229</p>
+                        <p class="phone-number">+91 79900 63442</p>
+                        <p>Email: support@infinitrip.com</p>
+                    </div>
+
+                    <div class="info-card">
+                        <h3><i class="fas fa-clock"></i> Processing Time</h3>
+                        <p>We typically confirm bookings within 24 hours. For urgent bookings, please call us directly.</p>
+                    </div>
+
+                    <div class="info-card">
+                        <h3><i class="fas fa-shield-alt"></i> Secure Booking</h3>
+                        <p>Your personal information is secure with us. We use encrypted connections for all transactions.</p>
+                    </div>
+
+                    <div class="info-card" style="background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(8, 145, 178, 0.1)); border: 2px solid var(--primary);">
+                        <h3><i class="fas fa-user-shield"></i> Are You a Driver or Admin?</h3>
+                        <p>Login to access your dashboard - Admin, Driver, or Customer portal.</p>
+                        <a href="signin.html" class="btn btn-primary" style="width: 100%; margin-top: 1rem; display: inline-flex; justify-content: center; align-items: center; gap: 0.5rem;">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-body">
+                <i class="fas fa-check-circle success-icon"></i>
+                <h2>Booking Request Submitted!</h2>
+                <p>Thank you for choosing INFINITRIP. We have received your booking request.</p>
+                <p><strong>Booking Reference:</strong> <span id="bookingReference"></span></p>
+                <p>Our team will contact you within 24 hours to confirm your booking and provide further details.</p>
+                <button class="btn btn-primary" onclick="closeModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-globe"></i>
+                        <span>INFINITRIP</span>
+                    </div>
+                    <p>Your trusted partner for exploring the infinite beauty of Kutch.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="destinations.html">Destinations</a></li>
+                        <li><a href="booking.html">Book Now</a></li>
+                        <li><a href="index.html#about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="tours.html">Group Tours</a></li>
+                        <li><a href="booking.html">Custom Packages</a></li>
+                        <li><a href="booking.html">Hotel Booking</a></li>
+                        <li><a href="vehicles.html">Transportation</a></li>
+                        <li><a href="booking.html">Cab Booking</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>For Drivers</h3>
+                    <ul>
+                        <li><a href="signin.html"><i class="fas fa-sign-in-alt"></i> Driver Login</a></li>
+                        <li><a href="driver-dashboard.html">Manage Rides</a></li>
+                        <li><a href="vehicles.html">Vehicle Gallery</a></li>
+                        <li><a href="index.html#contact">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 INFINITRIP. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="itinerary.js"></script>
+    <script src="auth.js"></script>
+    <script>
+        // Display itinerary based on destination and dates
+        function updateItinerary() {
+            const bookingType = document.getElementById('bookingType')?.value;
+            if (bookingType === 'cab') {
+                // Hide itinerary for cab bookings
+                const itineraryPreview = document.getElementById('itineraryPreview');
+                if (itineraryPreview) itineraryPreview.style.display = 'none';
+                return;
+            }
+
+            const destination = document.getElementById('destination')?.value;
+            const pickupDate = document.getElementById('pickupDate')?.value;
+            const returnDate = document.getElementById('returnDate')?.value;
+            const itineraryPreview = document.getElementById('itineraryPreview');
+            const itineraryContent = document.getElementById('itineraryContent');
+            
+            if (!destination || !pickupDate) {
+                if (itineraryPreview) itineraryPreview.style.display = 'none';
+                return;
+            }
+            
+            // Calculate number of days if return date is provided
+            let days = 1;
+            if (returnDate) {
+                const depDate = new Date(pickupDate);
+                const retDate = new Date(returnDate);
+                days = Math.ceil((retDate - depDate) / (1000 * 60 * 60 * 24)) + 1;
+            }
+            
+            if (days < 1) {
+                days = 1;
+            }
+            
+            // Get itinerary
+            if (typeof getItinerary !== 'function') {
+                if (itineraryPreview) itineraryPreview.style.display = 'none';
+                return;
+            }
+
+            const itinerary = getItinerary(destination, days);
+            
+            if (!itinerary) {
+                if (itineraryPreview) itineraryPreview.style.display = 'none';
+                return;
+            }
+            
+            // Display itinerary
+            if (itineraryPreview) itineraryPreview.style.display = 'block';
+            
+            if (days === 1 && Array.isArray(itinerary)) {
+                // Single day itinerary
+                let html = '<div class="itinerary-timeline">';
+                itinerary.forEach(item => {
+                    html += `
+                        <div class="timeline-item">
+                            <div class="timeline-time">${item.time}</div>
+                            <div class="timeline-content">
+                                <h4>${item.activity}</h4>
+                                <p>${item.description}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                if (itineraryContent) itineraryContent.innerHTML = html;
+            } else if (Array.isArray(itinerary) && itinerary[0].day) {
+                // Multi-day itinerary
+                let html = '';
+                itinerary.forEach(dayPlan => {
+                    html += `
+                        <div class="day-itinerary">
+                            <h3>${dayPlan.title}</h3>
+                            <div class="itinerary-timeline">
+                    `;
+                    dayPlan.activities.forEach(activity => {
+                        html += `
+                            <div class="timeline-item">
+                                <div class="timeline-time">${activity.time}</div>
+                                <div class="timeline-content">
+                                    <h4>${activity.activity}</h4>
+                                    <p>${activity.description}</p>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                });
+                if (itineraryContent) itineraryContent.innerHTML = html;
+            }
+        }
+        
+        // Add event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const bookingTypeSelect = document.getElementById('bookingType');
+            const destinationSelect = document.getElementById('destination');
+            const pickupDateInput = document.getElementById('pickupDate');
+            const returnDateInput = document.getElementById('returnDate');
+            
+            // Initialize booking type toggle
+            if (bookingTypeSelect) {
+                toggleBookingType();
+                bookingTypeSelect.addEventListener('change', function() {
+                    toggleBookingType();
+                    updateItinerary();
+                });
+            }
+            
+            if (destinationSelect) {
+                destinationSelect.addEventListener('change', updateItinerary);
+            }
+            if (pickupDateInput) {
+                pickupDateInput.addEventListener('change', updateItinerary);
+            }
+            if (returnDateInput) {
+                returnDateInput.addEventListener('change', updateItinerary);
+            }
+            
+            // Initial update if destination is pre-filled from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('destination')) {
+                setTimeout(updateItinerary, 500);
+            }
+        });
+    </script>
+</body>
+</html>
+
+

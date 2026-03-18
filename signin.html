@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - INFINITRIP</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .signin-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .signin-container::before {
+            content: '';
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: -250px;
+            right: -250px;
+            animation: float 20s infinite;
+        }
+        
+        .signin-container::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            bottom: -200px;
+            left: -200px;
+            animation: float 15s infinite reverse;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(30px, 30px) rotate(180deg); }
+        }
+        
+        .signin-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 3.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 100%;
+            max-width: 480px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .signin-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
+        .signin-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        .signin-logo i {
+            font-size: 2.5rem;
+            color: white;
+        }
+        
+        .signin-header h1 {
+            font-size: 2rem;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .signin-header p {
+            color: #718096;
+            font-size: 0.95rem;
+        }
+        
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            color: #4a5568;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-size: 1.1rem;
+            pointer-events: none;
+            z-index: 1;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 16px 20px 16px 55px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: #f7fafc;
+            box-sizing: border-box;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            padding-left: 55px;
+        }
+        
+        .form-input::placeholder {
+            color: #a0aec0;
+            opacity: 1;
+        }
+        
+        .error-message {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            display: none;
+            border-left: 4px solid #c53030;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .signin-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-top: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .signin-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .signin-btn:active {
+            transform: translateY(0);
+        }
+        
+        .signin-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .signin-footer p {
+            color: #718096;
+            margin-bottom: 1rem;
+        }
+        
+        .signin-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+        
+        .signin-footer a:hover {
+            color: #764ba2;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+        
+        .back-link a:hover {
+            color: #764ba2;
+        }
+        
+        
+        @media (max-width: 480px) {
+            .signin-card {
+                padding: 2.5rem 2rem;
+            }
+            
+            .signin-header h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signin-container">
+        <div class="signin-card">
+            <div class="signin-header">
+                <div class="signin-logo">
+                    <i class="fas fa-user-lock"></i>
+                </div>
+                <h1>Welcome Back</h1>
+                <p>Sign in to your account (Admin, Driver, or Customer)</p>
+            </div>
+            
+            <form id="signinForm">
+                <div class="form-group">
+                    <label class="form-label">Email or Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" 
+                               id="username" 
+                               class="form-input" 
+                               placeholder="Enter your email or username"
+                               required 
+                               autocomplete="username">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-key input-icon"></i>
+                        <input type="password" 
+                               id="password" 
+                               class="form-input" 
+                               placeholder="Enter your password"
+                               required 
+                               autocomplete="current-password">
+                    </div>
+                </div>
+                
+                <div class="error-message" id="errorMessage"></div>
+                
+                <button type="submit" class="signin-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Sign In</span>
+                </button>
+            </form>
+            
+            <div class="signin-footer">
+                <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
+            </div>
+            
+            <div class="back-link">
+                <a href="index.html">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Website</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="admin.js"></script>
+    <script>
+        // Initialize default driver accounts if not exists
+        if (!localStorage.getItem('drivers')) {
+            const defaultDrivers = [
+                {
+                    id: 1,
+                    name: 'Driver One',
+                    email: 'driver1@infinitrip.in',
+                    password: 'driver123',
+                    phone: '+91 98765 43210',
+                    vehicleCategory: '3-5',
+                    licenseNumber: 'DL-123456',
+                    status: 'active'
+                },
+                {
+                    id: 2,
+                    name: 'Driver Two',
+                    email: 'driver2@infinitrip.in',
+                    password: 'driver123',
+                    phone: '+91 98765 43211',
+                    vehicleCategory: '7-8',
+                    licenseNumber: 'DL-123457',
+                    status: 'active'
+                }
+            ];
+            localStorage.setItem('drivers', JSON.stringify(defaultDrivers));
+        }
+
+        document.getElementById('signinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            errorDiv.classList.remove('show');
+            
+            // Try admin login first
+            if (adminLogin(username, password)) {
+                // Admin credentials matched
+                setTimeout(() => {
+                    window.location.href = 'admin-dashboard.html';
+                }, 100);
+                return;
+            }
+            
+            // Try driver login
+            const drivers = JSON.parse(localStorage.getItem('drivers') || '[]');
+            const emailLower = username.toLowerCase();
+            const driver = drivers.find(d => d.email.toLowerCase() === emailLower && d.password === password);
+            
+            if (driver) {
+                // Driver credentials matched
+                localStorage.setItem('driverSession', JSON.stringify({
+                    id: driver.id,
+                    name: driver.name,
+                    email: driver.email,
+                    loggedIn: true,
+                    loginTime: new Date().toISOString()
+                }));
+                localStorage.setItem('userRole', 'driver');
+                
+                // Redirect to driver dashboard
+                setTimeout(() => {
+                    window.location.href = 'driver-dashboard.html';
+                }, 100);
+                return;
+            }
+            
+            // Try customer/user login
+            const users = JSON.parse(localStorage.getItem('users') || '[]');
+            const user = users.find(u => u.email.toLowerCase() === emailLower && u.password === password);
+            
+            if (user) {
+                // Customer credentials matched
+                const userData = {
+                    id: user.id || Date.now().toString(),
+                    email: user.email,
+                    firstName: user.firstName || '',
+                    lastName: user.lastName || '',
+                    phone: user.phone || '',
+                    username: user.email?.split('@')[0] || 'User'
+                };
+                localStorage.setItem('currentUser', JSON.stringify(userData));
+                localStorage.setItem('userRole', 'user');
+                
+                // Redirect to home or booking page
+                const redirectUrl = new URLSearchParams(window.location.search).get('redirect');
+                // Add small delay to ensure localStorage is saved
+                setTimeout(() => {
+                    window.location.href = redirectUrl || 'index.html';
+                }, 100);
+                return;
+            }
+            
+            // No credentials matched
+            errorDiv.textContent = 'Invalid credentials. Please check your email/username and password.';
+            errorDiv.classList.add('show');
+        });
+    </script>
+</body>
+</html>
+

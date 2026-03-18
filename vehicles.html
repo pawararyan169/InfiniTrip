@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Gallery - INFINITRIP</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-additional.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .vehicle-gallery {
+            padding: 5rem 0;
+            background: var(--light);
+        }
+
+        .vehicle-category {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .vehicle-category-header {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .vehicle-category-header h2 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .vehicle-category-header p {
+            color: var(--text);
+            font-size: 1.05rem;
+        }
+
+        .vehicle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .vehicle-card {
+            background: var(--light);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+
+        .vehicle-image {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: linear-gradient(135deg, var(--primary-light), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .vehicle-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .vehicle-details {
+            padding: 1.5rem;
+        }
+
+        .vehicle-details h3 {
+            font-size: 1.25rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .vehicle-specs {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .vehicle-specs li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .vehicle-specs li i {
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .vehicle-price {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            .vehicle-category {
+                padding: 2rem;
+            }
+
+            .vehicle-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="images/logo.png" alt="INFINITRIP Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <span style="display: none;"><i class="fas fa-globe"></i> INFINITRIP</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="destinations.html">Destinations</a></li>
+                    <li><a href="tours.html">Tours</a></li>
+                    <li><a href="booking.html">Book Now</a></li>
+                    <li><a href="vehicles.html" class="active">Vehicles</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <!-- Login/User name will be added dynamically by auth.js -->
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-overlay"></div>
+        <div class="container">
+            <div class="page-header-content">
+                <h1>Our Vehicle Fleet</h1>
+                <p>Choose from our wide range of vehicles for a comfortable journey</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vehicle Gallery -->
+    <section class="vehicle-gallery">
+        <div class="container">
+            <!-- 3-5 Seater -->
+            <div class="vehicle-category">
+                <div class="vehicle-category-header">
+                    <h2><i class="fas fa-car"></i> 3-5 Seater Vehicles</h2>
+                    <p>Perfect for small families and couples. Comfortable sedans and hatchbacks for city and short distance travel.</p>
+                </div>
+                <div class="vehicle-grid">
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=800" alt="Sedan" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-car\'></i>';">
+                        </div>
+                        <div class="vehicle-details">
+                            <h3>Sedan (4 Seater)</h3>
+                            <ul class="vehicle-specs">
+                                <li><i class="fas fa-users"></i> Seating: 4 passengers</li>
+                                <li><i class="fas fa-suitcase"></i> Luggage: 2 medium bags</li>
+                                <li><i class="fas fa-snowflake"></i> AC: Yes</li>
+                                <li><i class="fas fa-gas-pump"></i> Fuel: Petrol/Diesel</li>
+                            </ul>
+                            <div class="vehicle-price">From ₹12/km</div>
+                        </div>
+                    </div>
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800" alt="Hatchback" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-car\'></i>';">
+                        </div>
+                        <div class="vehicle-details">
+                            <h3>Hatchback (5 Seater)</h3>
+                            <ul class="vehicle-specs">
+                                <li><i class="fas fa-users"></i> Seating: 5 passengers</li>
+                                <li><i class="fas fa-suitcase"></i> Luggage: 2 medium bags</li>
+                                <li><i class="fas fa-snowflake"></i> AC: Yes</li>
+                                <li><i class="fas fa-gas-pump"></i> Fuel: Petrol</li>
+                            </ul>
+                            <div class="vehicle-price">From ₹10/km</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7-8 Seater -->
+            <div class="vehicle-category">
+                <div class="vehicle-category-header">
+                    <h2><i class="fas fa-car-side"></i> 7-8 Seater Vehicles</h2>
+                    <p>Ideal for larger families. Spacious SUVs and MPVs with extra legroom and comfort.</p>
+                </div>
+                <div class="vehicle-grid">
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800" alt="SUV" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-car-side\'></i>';">
+                        </div>
+                        <div class="vehicle-details">
+                            <h3>SUV (7 Seater)</h3>
+                            <ul class="vehicle-specs">
+                                <li><i class="fas fa-users"></i> Seating: 7 passengers</li>
+                                <li><i class="fas fa-suitcase"></i> Luggage: 4-5 medium bags</li>
+                                <li><i class="fas fa-snowflake"></i> AC: Yes</li>
+                                <li><i class="fas fa-gas-pump"></i> Fuel: Diesel</li>
+                            </ul>
+                            <div class="vehicle-price">From ₹15/km</div>
+                        </div>
+                    </div>
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800" alt="MPV" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-car-side\'></i>';">
+                        </div>
+                        <div class="vehicle-details">
+                            <h3>MPV (8 Seater)</h3>
+                            <ul class="vehicle-specs">
+                                <li><i class="fas fa-users"></i> Seating: 8 passengers</li>
+                                <li><i class="fas fa-suitcase"></i> Luggage: 5-6 medium bags</li>
+                                <li><i class="fas fa-snowflake"></i> AC: Yes</li>
+                                <li><i class="fas fa-gas-pump"></i> Fuel: Diesel</li>
+                            </ul>
+                            <div class="vehicle-price">From ₹18/km</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10-12 Seater -->
+            <div class="vehicle-category">
+                <div class="vehicle-category-header">
+                    <h2><i class="fas fa-shuttle-van"></i> 10-12 Seater Vehicles</h2>
+                    <p>Perfect for group travel. Tempo Travellers with comfortable seating and ample luggage space.</p>
+                </div>
+                <div class="vehicle-grid">
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=800" alt="Tempo Traveller" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-shuttle-van\'></i>';">
+                        </div>
+                        <div class="vehicle-details">
+                            <h3>Tempo Traveller (12 Seater)</h3>
+                            <ul class="vehicle-specs">
+                                <li><i class="fas fa-users"></i> Seating: 12 passengers</li>
+                                <li><i class="fas fa-suitcase"></i> Luggage: Large boot space</li>
+                                <li><i class="fas fa-snowflake"></i> AC: Yes, Multi-zone</li>
+                                <li><i class="fas fa-gas-pump"></i> Fuel: Diesel</li>
+                            </ul>
+                            <div class="vehicle-price">From ₹22/km</div>
+                        </div>
+                    </div>
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800" alt="Mini Van" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-shuttle-van\'></i>';">
+                        </div>
+                        <div class="vehicle-details">
+                            <h3>Mini Van (10 Seater)</h3>
+                            <ul class="vehicle-specs">
+                                <li><i class="fas fa-users"></i> Seating: 10 passengers</li>
+                                <li><i class="fas fa-suitcase"></i> Luggage: Medium boot space</li>
+                                <li><i class="fas fa-snowflake"></i> AC: Yes</li>
+                                <li><i class="fas fa-gas-pump"></i> Fuel: Diesel</li>
+                            </ul>
+                            <div class="vehicle-price">From ₹20/km</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 15-20 Seater -->
+            <div class="vehicle-category">
+                <div class="vehicle-category-header">
+                    <h2><i class="fas fa-bus"></i> 15-20 Seater Vehicles</h2>
+                    <p>Ideal for large groups. Comfortable mini buses with reclining seats and entertainment systems.</p>
+                </div>
+                <div class="vehicle-grid">
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800" alt="Mini Bus" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-bus\'></i>';">
+                        </div>
+                        <div class="vehicle-details">
+                            <h3>Mini Bus (20 Seater)</h3>
+                            <ul class="vehicle-specs">
+                                <li><i class="fas fa-users"></i> Seating: 20 passengers</li>
+                                <li><i class="fas fa-suitcase"></i> Luggage: Large storage</li>
+                                <li><i class="fas fa-snowflake"></i> AC: Yes, Full AC</li>
+                                <li><i class="fas fa-tv"></i> Entertainment: Music System</li>
+                            </ul>
+                            <div class="vehicle-price">From ₹30/km</div>
+                        </div>
+                    </div>
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="https://images.unsplash.com/photo-1568605117039-54f0b31a2757?w=800" alt="Coach" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-bus\'></i>';">
+                        </div>
+                        <div class="vehicle-details">
+                            <h3>Mini Coach (18 Seater)</h3>
+                            <ul class="vehicle-specs">
+                                <li><i class="fas fa-users"></i> Seating: 18 passengers</li>
+                                <li><i class="fas fa-suitcase"></i> Luggage: Overhead storage</li>
+                                <li><i class="fas fa-snowflake"></i> AC: Yes, Full AC</li>
+                                <li><i class="fas fa-couch"></i> Seats: Reclining seats</li>
+                            </ul>
+                            <div class="vehicle-price">From ₹28/km</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 20-40 Seater -->
+            <div class="vehicle-category">
+                <div class="vehicle-category-header">
+                    <h2><i class="fas fa-bus-alt"></i> 20-40 Seater Vehicles</h2>
+                    <p>Perfect for large groups and tours. Full-size buses with premium amenities and comfortable seating.</p>
+                </div>
+                <div class="vehicle-grid">
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=800" alt="AC Bus" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-bus-alt\'></i>';">
+                        </div>
+                        <div class="vehicle-details">
+                            <h3>AC Bus (40 Seater)</h3>
+                            <ul class="vehicle-specs">
+                                <li><i class="fas fa-users"></i> Seating: 40 passengers</li>
+                                <li><i class="fas fa-suitcase"></i> Luggage: Large boot space</li>
+                                <li><i class="fas fa-snowflake"></i> AC: Yes, Full AC</li>
+                                <li><i class="fas fa-tv"></i> Entertainment: TV + Music</li>
+                            </ul>
+                            <div class="vehicle-price">From ₹35/km</div>
+                        </div>
+                    </div>
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="https://images.unsplash.com/photo-1568605117039-54f0b31a2757?w=800" alt="Luxury Bus" onerror="this.style.display='none'; this.parentElement.innerHTML='<i class=\'fas fa-bus-alt\'></i>';">
+                        </div>
+                        <div class="vehicle-details">
+                            <h3>Luxury Bus (32 Seater)</h3>
+                            <ul class="vehicle-specs">
+                                <li><i class="fas fa-users"></i> Seating: 32 passengers</li>
+                                <li><i class="fas fa-suitcase"></i> Luggage: Overhead + Boot</li>
+                                <li><i class="fas fa-snowflake"></i> AC: Yes, Premium AC</li>
+                                <li><i class="fas fa-couch"></i> Seats: Reclining + Pushback</li>
+                            </ul>
+                            <div class="vehicle-price">From ₹42/km</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA Section -->
+            <div style="text-align: center; margin-top: 4rem;">
+                <h2 style="font-size: 2rem; margin-bottom: 1rem; color: var(--dark);">Ready to Book Your Vehicle?</h2>
+                <p style="color: var(--text); margin-bottom: 2rem; font-size: 1.1rem;">Choose your preferred vehicle and book now!</p>
+                <a href="booking.html" class="btn btn-primary btn-large">
+                    <i class="fas fa-calendar-check"></i> Book Now
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>INFINITRIP</h3>
+                    <p>Your gateway to exploring the beautiful destinations of Kutch, Gujarat. Experience authentic culture, stunning landscapes, and unforgettable memories.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="destinations.html">Destinations</a></li>
+                        <li><a href="tours.html">Tours</a></li>
+                        <li><a href="booking.html">Book Now</a></li>
+                        <li><a href="vehicles.html">Vehicles</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>For Drivers</h3>
+                    <ul>
+                        <li><a href="signin.html"><i class="fas fa-sign-in-alt"></i> Driver Login</a></li>
+                        <li><a href="driver-dashboard.html">Manage Rides</a></li>
+                        <li><a href="vehicles.html">Vehicle Gallery</a></li>
+                        <li><a href="index.html#contact">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +91 95124 95229</li>
+                        <li><i class="fas fa-envelope"></i> info@infinitrip.in</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Kutch, Gujarat, India</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 INFINITRIP. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>
+

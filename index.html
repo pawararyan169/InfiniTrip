@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFINITRIP - Explore Kutch, Explore Infinity</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-additional.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="images/logo.png" alt="INFINITRIP Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <span style="display: none;"><i class="fas fa-globe"></i> INFINITRIP</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="destinations.html">Destinations</a></li>
+                    <li><a href="tours.html">Tours</a></li>
+                    <li><a href="booking.html">Book Now</a></li>
+                    <li><a href="vehicles.html">Vehicles</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <!-- Login/User name will be added dynamically by auth.js -->
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Welcome to INFINITRIP</h1>
+            <p>Discover the Magic of Kutch - Where Tradition Meets Infinity</p>
+            <a href="booking.html" class="btn btn-primary">Start Your Journey</a>
+        </div>
+        <div class="scroll-indicator">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Why Choose INFINITRIP?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Safe & Secure</h3>
+                    <p>Your safety is our top priority with verified accommodations and transport.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-rupee-sign"></i>
+                    <h3>Best Prices</h3>
+                    <p>Competitive pricing with no hidden charges. Best value for your money.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-headset"></i>
+                    <h3>24/7 Support</h3>
+                    <p>Round-the-clock customer support to assist you anytime, anywhere.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-map-marked-alt"></i>
+                    <h3>Expert Guides</h3>
+                    <p>Local expert guides to make your journey memorable and informative.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Destinations Preview -->
+    <section class="destinations-preview">
+        <div class="container">
+            <h2 class="section-title">Explore Kutch's Hidden Gems</h2>
+            <div class="destinations-grid">
+                <div class="destination-card">
+                    <div class="destination-image" style="background-image: url('https://www.gujaratrannutsav.com/wp-content/uploads/Full-Moon-Night-In-The-Rann-of-Kutch-1-1-2048x1261-1.jpeg')">
+                        <div class="destination-overlay"></div>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Rann of Kutch</h3>
+                        <p>The Great White Desert - A mesmerizing salt marsh in the Thar Desert</p>
+                        <a href="destinations.html#rann" class="btn btn-secondary">Explore</a>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image" style="background-image: url('https://media-cdn.tripadvisor.com/media/photo-s/1a/67/d8/d4/mandvi-beach-kutch-gujarat.jpg')">
+                        <div class="destination-overlay"></div>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Mandvi Beach</h3>
+                        <p>Pristine beaches with historic shipbuilding yards and Vijay Vilas Palace</p>
+                        <a href="destinations.html#mandvi" class="btn btn-secondary">Explore</a>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image" style="background-image: url('https://www.holidify.com/images/bgImages/BHUJ.jpg')">
+                        <div class="destination-overlay"></div>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Bhuj</h3>
+                        <p>Historic city with ancient palaces, museums, and vibrant culture</p>
+                        <a href="destinations.html#bhuj" class="btn btn-secondary">Explore</a>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image" style="background-image: url('https://econaur.com/wp-content/uploads/2021/08/1_Btf3A33wHXFLg52raGSWgg.png')">
+                        <div class="destination-overlay"></div>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Dholavira</h3>
+                        <p>UNESCO World Heritage Site - Ancient Harappan civilization ruins</p>
+                        <a href="destinations.html#dholavira" class="btn btn-secondary">Explore</a>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image" style="background-image: url('https://tse4.mm.bing.net/th/id/OIP.NoEDPX33qUgMhEQfSxPErQHaFw?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3')">
+                        <div class="destination-overlay"></div>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Narayan Sarovar</h3>
+                        <p>One of the five holy lakes of India - A significant pilgrimage site</p>
+                        <a href="destinations.html#narayan-sarovar" class="btn btn-secondary">Explore</a>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image" style="background-image: url('https://images.travelandleisureasia.com/wp-content/uploads/sites/2/2023/10/20135548/Dhordo-1600x900.jpg')">
+                        <div class="destination-overlay"></div>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Dhordo</h3>
+                        <p>Gateway to Rann of Kutch and main venue for the famous Rann Utsav</p>
+                        <a href="destinations.html#dhordo" class="btn btn-secondary">Explore</a>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image" style="background-image: url('https://images.travelandleisureasia.com/wp-content/uploads/sites/2/2023/10/20135548/Dhordo-1600x900.jpg')">
+                        <div class="destination-overlay"></div>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Vijay Vilas Palace</h3>
+                        <p>Magnificent royal palace with beautiful architecture and sea views</p>
+                        <a href="destinations.html#vijay-vilas" class="btn btn-secondary">Explore</a>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image" style="background-image: url('https://1.bp.blogspot.com/-x6N7lFWYLq4/YJjPVmMXbiI/AAAAAAAAAOw/15qZk8PKoz88bzrBs3WqmIS0_58wyz_iwCLcBGAsYHQ/s640/aina%2Bmahal%2B0.jpg')">
+                        <div class="destination-overlay"></div>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Aina Mahel</h3>
+                        <p>Palace of Mirrors - Stunning 18th-century palace with intricate mirror work</p>
+                        <a href="destinations.html#aina-mahel" class="btn btn-secondary">Explore</a>
+                    </div>
+                </div>
+                <div class="destination-card">
+                    <div class="destination-image" style="background-image: url('https://www.trawell.in/admin/images/upload/151126954Kutch_Museum.jpg')">
+                        <div class="destination-overlay"></div>
+                    </div>
+                    <div class="destination-content">
+                        <h3>Kutch Museum</h3>
+                        <p>Oldest museum in Gujarat showcasing rich history and culture of Kutch</p>
+                        <a href="destinations.html#kutch-museum" class="btn btn-secondary">Explore</a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <a href="destinations.html" class="btn btn-primary">View All Destinations</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2>About INFINITRIP</h2>
+                    <p>INFINITRIP is your gateway to exploring the magnificent Kutch district of Gujarat. We specialize in creating unforgettable travel experiences that showcase the rich culture, stunning landscapes, and historical significance of this unique region.</p>
+                    <p>From the white salt desert of Rann of Kutch to the ancient ruins of Dholavira, from the pristine beaches of Mandvi to the cultural hub of Bhuj - we bring you closer to the heart of Kutch.</p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <h3>5000+</h3>
+                            <p>Happy Travelers</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>50+</h3>
+                            <p>Destinations</p>
+                        </div>
+                        <div class="stat-item">
+                            <h3>15+</h3>
+                            <p>Expert Guides</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="images/logo.png" alt="INFINITRIP Logo" class="about-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="image-placeholder" style="display: none;">
+                        <i class="fas fa-mountain"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <h2 class="section-title">What Our Travelers Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"An amazing experience! The Rann of Kutch during full moon was absolutely magical. INFINITRIP made everything seamless."</p>
+                    <div class="testimonial-author">
+                        <strong>Priya Sharma</strong>
+                        <span>Mumbai</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"Best travel agency in Kutch! Professional guides, comfortable accommodations, and unforgettable memories."</p>
+                    <div class="testimonial-author">
+                        <strong>Rajesh Patel</strong>
+                        <span>Ahmedabad</span>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p>"Dholavira tour was incredible! The historical insights and beautiful landscapes exceeded all expectations."</p>
+                    <div class="testimonial-author">
+                        <strong>Anita Desai</strong>
+                        <span>Delhi</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <h3>Address</h3>
+                            <p>123 Travel Street, Bhuj, Kutch<br>Gujarat, India - 370001</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <h3>Phone</h3>
+                            <p>+91 95124 95229<br>+91 79900 63442</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <h3>Email</h3>
+                            <p>info@infinitrip.com<br>support@infinitrip.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <h3>Business Hours</h3>
+                            <p>Mon - Sat: 9:00 AM - 7:00 PM<br>Sunday: 10:00 AM - 5:00 PM</p>
+                        </div>
+                    </div>
+                </div>
+                <form class="contact-form" id="contactForm">
+                    <div class="contact-form-row">
+                        <input type="text" id="contactName" name="name" placeholder="Your Name" required>
+                        <input type="email" id="contactEmail" name="email" placeholder="Your Email" required>
+                        <input type="tel" id="contactPhone" name="phone" placeholder="Your Phone" required>
+                    </div>
+                    <textarea id="contactMessage" name="message" placeholder="Your Message" rows="5" required></textarea>
+                    <button type="submit" class="btn btn-primary contact-submit-btn">
+                        <span>Send Message</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-globe"></i>
+                        <span>INFINITRIP</span>
+                    </div>
+                    <p>Your trusted partner for exploring the infinite beauty of Kutch.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="destinations.html">Destinations</a></li>
+                        <li><a href="booking.html">Book Now</a></li>
+                        <li><a href="#about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="tours.html">Group Tours</a></li>
+                        <li><a href="booking.html">Custom Packages</a></li>
+                        <li><a href="booking.html">Hotel Booking</a></li>
+                        <li><a href="vehicles.html">Transportation</a></li>
+                        <li><a href="booking.html">Cab Booking</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>For Drivers</h3>
+                    <ul>
+                        <li><a href="signin.html"><i class="fas fa-sign-in-alt"></i> Driver Login</a></li>
+                        <li><a href="driver-dashboard.html">Manage Rides</a></li>
+                        <li><a href="vehicles.html">Vehicle Gallery</a></li>
+                        <li><a href="#contact">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Newsletter</h3>
+                    <p>Subscribe to get updates on new destinations and offers.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Enter your email">
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 INFINITRIP. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/919512495229?text=Hello%20INFINITRIP!%20I%20would%20like%20to%20know%20more%20about%20your%20tours." 
+       class="whatsapp-button" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Infini AI Button -->
+    <button id="infiniAIButton" class="infini-ai-button" aria-label="Open Infini AI Chat">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <!-- Infini AI Chat Container -->
+    <div id="infiniAIChat" class="infini-ai-chat">
+        <div class="chat-header">
+            <h3>
+                <i class="fas fa-robot"></i>
+                Infini AI
+            </h3>
+            <button id="closeChat" class="close-chat" aria-label="Close chat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Ask me about Kutch destinations, packages, or pricing...">
+            <button onclick="sendChatMessage()" class="send-button" aria-label="Send message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="infini-ai.js"></script>
+</body>
+</html>
+
+
+
+                    <div class="contact-item">
+
+                        <i class="fas fa-clock"></i>
+
+                        <div>
+
+                            <h3>Business Hours</h3>
+
+                            <p>Mon - Sat: 9:00 AM - 7:00 PM<br>Sunday: 10:00 AM - 5:00 PM</p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <form class="contact-form" id="contactForm">
+
+                    <div class="contact-form-row">
+                        <input type="text" id="contactName" name="name" placeholder="Your Name" required>
+                        <input type="email" id="contactEmail" name="email" placeholder="Your Email" required>
+                        <input type="tel" id="contactPhone" name="phone" placeholder="Your Phone" required>
+                    </div>
+                    <textarea id="contactMessage" name="message" placeholder="Your Message" rows="5" required></textarea>
+                    <button type="submit" class="btn btn-primary contact-submit-btn">
+                        <span>Send Message</span>
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- Footer -->
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <div class="footer-content">
+
+                <div class="footer-section">
+
+                    <div class="logo">
+
+                        <i class="fas fa-globe"></i>
+
+                        <span>INFINITRIP</span>
+
+                    </div>
+
+                    <p>Your trusted partner for exploring the infinite beauty of Kutch.</p>
+
+                    <div class="social-links">
+
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+
+                    </div>
+
+                </div>
+
+                <div class="footer-section">
+
+                    <h3>Quick Links</h3>
+
+                    <ul>
+
+                        <li><a href="index.html">Home</a></li>
+
+                        <li><a href="destinations.html">Destinations</a></li>
+
+                        <li><a href="booking.html">Book Now</a></li>
+
+                        <li><a href="#about">About Us</a></li>
+
+                    </ul>
+
+                </div>
+
+                <div class="footer-section">
+
+                    <h3>Services</h3>
+
+                    <ul>
+
+                        <li><a href="#">Group Tours</a></li>
+
+                        <li><a href="#">Custom Packages</a></li>
+
+                        <li><a href="#">Hotel Booking</a></li>
+
+                        <li><a href="#">Transportation</a></li>
+
+                    </ul>
+
+                </div>
+
+                <div class="footer-section">
+
+                    <h3>Newsletter</h3>
+
+                    <p>Subscribe to get updates on new destinations and offers.</p>
+
+                    <form class="newsletter-form">
+
+                        <input type="email" placeholder="Enter your email">
+
+                        <button type="submit" class="btn btn-primary">Subscribe</button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+
+                <p>&copy; 2025 INFINITRIP. All rights reserved.</p>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/919512495229?text=Hello%20INFINITRIP!%20I%20would%20like%20to%20know%20more%20about%20your%20tours." 
+       class="whatsapp-button" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Infini AI Button -->
+    <button id="infiniAIButton" class="infini-ai-button" aria-label="Open Infini AI Chat">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <!-- Infini AI Chat Container -->
+    <div id="infiniAIChat" class="infini-ai-chat">
+        <div class="chat-header">
+            <h3>
+                <i class="fas fa-robot"></i>
+                Infini AI
+            </h3>
+            <button id="closeChat" class="close-chat" aria-label="Close chat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Ask me about Kutch destinations, packages, or pricing...">
+            <button onclick="sendChatMessage()" class="send-button" aria-label="Send message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+
+    <script src="auth.js"></script>
+    <script src="infini-ai.js"></script>
+</body>
+
+</html>
+
+
+
+
+
+

@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destinations - INFINITRIP</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-additional.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="images/logo.png" alt="INFINITRIP Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <span style="display: none;"><i class="fas fa-globe"></i> INFINITRIP</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="destinations.html" class="active">Destinations</a></li>
+                    <li><a href="tours.html">Tours</a></li>
+                    <li><a href="booking.html">Book Now</a></li>
+                    <li><a href="vehicles.html">Vehicles</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <!-- Login/User name will be added dynamically by auth.js -->
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-overlay"></div>
+        <div class="page-header-content">
+            <h1>Explore Kutch</h1>
+            <p>Discover the most beautiful destinations in Kutch district</p>
+        </div>
+    </section>
+
+    <!-- Destinations Section -->
+    <section class="destinations-detail">
+        <div class="container">
+            <!-- Rann of Kutch -->
+            <div id="rann" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://www.gujaratrannutsav.com/wp-content/uploads/Full-Moon-Night-In-The-Rann-of-Kutch-1-1-2048x1261-1.jpeg" alt="Rann of Kutch">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Rann of Kutch</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Great Rann of Kutch</span>
+                        <span><i class="fas fa-clock"></i> Full Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹2,500</span>
+                    </div>
+                    <p>The Great Rann of Kutch is a seasonal salt marsh located in the Thar Desert in the Kutch District of Gujarat, India. It is reputed to be one of the largest salt deserts in the world. This unique landscape transforms with the seasons - a white salt desert during the dry season and a shallow wetland during the monsoon.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March, especially during the full moon nights when the white desert glows under moonlight.</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>White salt desert stretching to the horizon</li>
+                        <li>Rann Utsav - the cultural festival (Nov-Feb)</li>
+                        <li>Full moon night experiences</li>
+                        <li>Traditional Kutchi culture and handicrafts</li>
+                        <li>Sunset and sunrise views</li>
+                    </ul>
+                    <a href="booking.html?destination=rann" class="btn btn-primary">Book This Destination</a>
+                    
+                    <!-- Day-wise Itinerary -->
+                    <div class="itinerary-section">
+                        <button class="itinerary-toggle" onclick="toggleItinerary('rann-itinerary')">
+                            <i class="fas fa-calendar-alt"></i> View Day-wise Itinerary
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div id="rann-itinerary" class="itinerary-content" style="display: none;">
+                            <h3>1-Day Itinerary: Rann of Kutch</h3>
+                            <div class="itinerary-timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-time">06:00 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Departure from Bhuj</h4>
+                                        <p>Early morning pickup from hotel/accommodation in Bhuj. Start your journey to the Great Rann of Kutch.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">08:00 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Breakfast Stop</h4>
+                                        <p>Enjoy traditional Gujarati breakfast at a local restaurant en route.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">10:00 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Arrive at Rann of Kutch</h4>
+                                        <p>Reach the white salt desert. Witness the mesmerizing white landscape stretching to the horizon.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">10:30 AM - 12:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Desert Exploration</h4>
+                                        <p>Walk on the salt desert, photography session, and experience the unique terrain.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">12:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Lunch</h4>
+                                        <p>Traditional Kutchi lunch at a local restaurant or tent accommodation.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">02:00 PM - 04:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Cultural Activities</h4>
+                                        <p>Visit local handicraft stalls, interact with local artisans, and shop for authentic Kutchi items.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">04:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Sunset Preparation</h4>
+                                        <p>Head to the best sunset viewing point in the Rann.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">05:30 PM - 06:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Sunset Experience</h4>
+                                        <p>Witness the spectacular sunset over the white desert - a truly magical experience.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">07:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Return Journey</h4>
+                                        <p>Begin return journey to Bhuj with beautiful memories.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">09:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Arrival at Bhuj</h4>
+                                        <p>Drop off at your accommodation. End of tour.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dholavira -->
+            <div id="dholavira" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://econaur.com/wp-content/uploads/2021/08/1_Btf3A33wHXFLg52raGSWgg.png" alt="Dholavira">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Dholavira</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Dholavira, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Full Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹3,000</span>
+                    </div>
+                    <p>Dholavira is one of the five largest Harappan sites and a UNESCO World Heritage Site. This ancient city showcases the sophisticated urban planning and water management systems of the Indus Valley Civilization, dating back over 4500 years.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March (avoid summer months)</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>UNESCO World Heritage Site</li>
+                        <li>Ancient Harappan civilization ruins</li>
+                        <li>Sophisticated water management systems</li>
+                        <li>Archaeological museum</li>
+                        <li>Fossil Park nearby</li>
+                        <li>Unique stone architecture</li>
+                    </ul>
+                    <a href="booking.html?destination=dholavira" class="btn btn-primary">Book This Destination</a>
+                    
+                    <!-- Day-wise Itinerary -->
+                    <div class="itinerary-section">
+                        <button class="itinerary-toggle" onclick="toggleItinerary('dholavira-itinerary')">
+                            <i class="fas fa-calendar-alt"></i> View Day-wise Itinerary
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div id="dholavira-itinerary" class="itinerary-content" style="display: none;">
+                            <h3>1-Day Itinerary: Dholavira</h3>
+                            <div class="itinerary-timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-time">05:00 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Early Departure from Bhuj</h4>
+                                        <p>Early morning pickup for the long journey to Dholavira (approximately 4-5 hours).</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">07:00 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Breakfast Break</h4>
+                                        <p>Breakfast stop at a local restaurant en route.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">10:30 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Arrive at Dholavira</h4>
+                                        <p>Reach the UNESCO World Heritage Site - Dholavira.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">11:00 AM - 01:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Archaeological Site Exploration</h4>
+                                        <p>Guided tour of the ancient Harappan city ruins, including the citadel, middle town, and lower town.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">01:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Lunch</h4>
+                                        <p>Lunch at a local restaurant near the site.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">02:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Archaeological Museum</h4>
+                                        <p>Visit the on-site museum to see artifacts, pottery, and learn about the Indus Valley Civilization.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">03:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Water Management Systems</h4>
+                                        <p>Explore the sophisticated water management systems - one of the highlights of Dholavira.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">04:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Fossil Park (Optional)</h4>
+                                        <p>Visit the nearby fossil park if time permits.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">05:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Return Journey</h4>
+                                        <p>Begin return journey to Bhuj.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">09:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Arrival at Bhuj</h4>
+                                        <p>Drop off at your accommodation. End of tour.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mandvi Beach -->
+            <div id="mandvi" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/1a/67/d8/d4/mandvi-beach-kutch-gujarat.jpg" alt="Mandvi Beach">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Mandvi Beach</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Mandvi, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,500</span>
+                    </div>
+                    <p>Mandvi is a beautiful coastal town in Kutch known for its pristine beaches, historic shipbuilding yards, and the magnificent Vijay Vilas Palace. The beach offers a perfect blend of natural beauty and cultural heritage.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March for pleasant weather.</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Pristine sandy beaches</li>
+                        <li>Vijay Vilas Palace - a royal heritage</li>
+                        <li>Traditional shipbuilding yards</li>
+                        <li>Water sports and camel rides</li>
+                        <li>Beautiful sunset views</li>
+                        <li>Local seafood delicacies</li>
+                    </ul>
+                    <a href="booking.html?destination=mandvi" class="btn btn-primary">Book This Destination</a>
+                    
+                    <!-- Day-wise Itinerary -->
+                    <div class="itinerary-section">
+                        <button class="itinerary-toggle" onclick="toggleItinerary('mandvi-itinerary')">
+                            <i class="fas fa-calendar-alt"></i> View Day-wise Itinerary
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div id="mandvi-itinerary" class="itinerary-content" style="display: none;">
+                            <h3>1-Day Itinerary: Mandvi Beach</h3>
+                            <div class="itinerary-timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-time">08:00 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Departure from Bhuj</h4>
+                                        <p>Morning pickup and drive to Mandvi Beach (approximately 1 hour).</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">09:00 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Arrive at Mandvi</h4>
+                                        <p>Reach Mandvi and start your beach exploration.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">09:30 AM - 11:00 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Vijay Vilas Palace Visit</h4>
+                                        <p>Explore the magnificent Vijay Vilas Palace - a royal heritage with stunning architecture and beautiful gardens.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">11:30 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Shipbuilding Yard Tour</h4>
+                                        <p>Visit the traditional shipbuilding yards to see the ancient craft of wooden ship construction.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">12:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Lunch</h4>
+                                        <p>Enjoy fresh seafood and local Gujarati cuisine at a beachside restaurant.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">02:00 PM - 04:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Beach Activities</h4>
+                                        <p>Relax on the pristine beach, enjoy water sports, camel rides, or simply soak in the sun.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">04:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Local Market Visit</h4>
+                                        <p>Explore local markets for handicrafts, souvenirs, and traditional items.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">05:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Sunset at Beach</h4>
+                                        <p>Witness the beautiful sunset over the Arabian Sea.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">06:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Return Journey</h4>
+                                        <p>Begin return journey to Bhuj.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">07:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Arrival at Bhuj</h4>
+                                        <p>Drop off at your accommodation. End of tour.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bhuj -->
+            <div id="bhuj" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://www.holidify.com/images/bgImages/BHUJ.jpg" alt="Bhuj">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Bhuj</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Bhuj City</span>
+                        <span><i class="fas fa-clock"></i> Full Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹2,000</span>
+                    </div>
+                    <p>Bhuj is the district headquarters of Kutch and a city rich in history and culture. It houses ancient palaces, museums, and is a hub for traditional Kutchi handicrafts. The city offers a deep dive into the region's heritage and traditions.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Aina Mahal (Palace of Mirrors)</li>
+                        <li>Prag Mahal - Italian Gothic architecture</li>
+                        <li>Kutch Museum - oldest museum in Gujarat</li>
+                        <li>Hamirsar Lake - scenic water body</li>
+                        <li>Handicraft markets and workshops</li>
+                        <li>Swaminarayan Temple</li>
+                    </ul>
+                    <a href="booking.html?destination=bhuj" class="btn btn-primary">Book This Destination</a>
+                    
+                    <!-- Day-wise Itinerary -->
+                    <div class="itinerary-section">
+                        <button class="itinerary-toggle" onclick="toggleItinerary('bhuj-itinerary')">
+                            <i class="fas fa-calendar-alt"></i> View Day-wise Itinerary
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div id="bhuj-itinerary" class="itinerary-content" style="display: none;">
+                            <h3>1-Day Itinerary: Bhuj City</h3>
+                            <div class="itinerary-timeline">
+                                <div class="timeline-item">
+                                    <div class="timeline-time">09:00 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Hotel Pickup</h4>
+                                        <p>Start your cultural tour of Bhuj city.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">09:30 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Aina Mahal (Palace of Mirrors)</h4>
+                                        <p>Visit the stunning 18th-century palace known for its mirror work and intricate architecture.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">11:00 AM</div>
+                                    <div class="timeline-content">
+                                        <h4>Prag Mahal</h4>
+                                        <p>Explore the Italian Gothic architecture of Prag Mahal, built in the 19th century.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">12:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Kutch Museum</h4>
+                                        <p>Visit the oldest museum in Gujarat, housing artifacts, textiles, and historical items.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">01:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Lunch</h4>
+                                        <p>Enjoy traditional Kutchi lunch at a local restaurant.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">02:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Hamirsar Lake</h4>
+                                        <p>Relax by the scenic Hamirsar Lake, a beautiful water body in the heart of Bhuj.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">03:30 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Handicraft Markets</h4>
+                                        <p>Explore local handicraft markets and workshops - famous for Bandhani, embroidery, and metalwork.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">05:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Swaminarayan Temple</h4>
+                                        <p>Visit the beautiful Swaminarayan Temple for spiritual experience.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">06:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Local Shopping</h4>
+                                        <p>Shop for authentic Kutchi handicrafts, textiles, and souvenirs.</p>
+                                    </div>
+                                </div>
+                                <div class="timeline-item">
+                                    <div class="timeline-time">07:00 PM</div>
+                                    <div class="timeline-content">
+                                        <h4>Return to Hotel</h4>
+                                        <p>End of tour. Drop off at your accommodation.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dhordo -->
+            <div id="dhordo" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://images.travelandleisureasia.com/wp-content/uploads/sites/2/2023/10/20135548/Dhordo-1600x900.jpg" alt="Dhordo">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Dhordo</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Dhordo, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Full Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹2,000</span>
+                    </div>
+                    <p>Dhordo is the gateway to the Great Rann of Kutch and the main venue for the famous Rann Utsav festival. This village offers authentic Kutchi culture, traditional handicrafts, and desert experiences.</p>
+                    <p><strong>Best Time to Visit:</strong> November to February (during Rann Utsav)</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Rann Utsav main venue</li>
+                        <li>Traditional Kutchi village experience</li>
+                        <li>Handicraft markets</li>
+                        <li>Desert tent accommodations</li>
+                        <li>Cultural performances</li>
+                        <li>Gateway to White Rann</li>
+                    </ul>
+                    <a href="booking.html?destination=dhordo" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Road to Heaven -->
+            <div id="road-to-heaven" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://tse2.mm.bing.net/th/id/OIP.93TWHMNz3Bclc1u0zIxwLQHaEE?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Road to Heaven">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Road to Heaven</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Kutch District</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹2,200</span>
+                    </div>
+                    <p>The Road to Heaven is a spectacular elevated road that appears to stretch into infinity across the white salt desert. It's one of the most photographed locations in Kutch, especially during sunset.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March, especially during sunset</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Iconic elevated road across white desert</li>
+                        <li>Breathtaking sunset views</li>
+                        <li>Photography paradise</li>
+                        <li>Surreal landscape</li>
+                        <li>Full moon night experiences</li>
+                    </ul>
+                    <a href="booking.html?destination=road-to-heaven" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Kala Dungar (Black Hill) -->
+            <div id="kala-dungar" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://www.trawell.in/admin/images/upload/359804999Kalo_Dunga_Main_2.jpg" alt="Kala Dungar">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Kala Dungar (Black Hill)</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Kala Dungar, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,800</span>
+                    </div>
+                    <p>Kala Dungar is the highest point in Kutch, offering panoramic views of the Great Rann of Kutch. It houses a 400-year-old Dattatreya temple and provides breathtaking views of the white desert below.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March, especially during sunset</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Highest point in Kutch (462 meters)</li>
+                        <li>Dattatreya Temple - 400 years old</li>
+                        <li>Panoramic views of Rann of Kutch</li>
+                        <li>Spectacular sunset views</li>
+                        <li>Wildlife spotting opportunities</li>
+                    </ul>
+                    <a href="booking.html?destination=kala-dungar" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Vijay Vilas Palace -->
+            <div id="vijay-vilas" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://tse3.mm.bing.net/th/id/OIP.Qa6lnlYDbAYR1ldy1Y6AswHaE2?cb=ucfimg2&ucfimg=1&w=892&h=585&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Vijay Vilas Palace">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Vijay Vilas Palace</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Mandvi, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,500</span>
+                    </div>
+                    <p>Vijay Vilas Palace is a magnificent royal palace built in the 1920s, showcasing beautiful Rajput architecture. The palace has been featured in several Bollywood films and offers stunning views of the Arabian Sea.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Royal palace architecture</li>
+                        <li>Bollywood film location</li>
+                        <li>Beautiful gardens and courtyards</li>
+                        <li>Sea views</li>
+                        <li>Historical significance</li>
+                        <li>Photography opportunities</li>
+                    </ul>
+                    <a href="booking.html?destination=vijay-vilas" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Aina Mahel -->
+            <div id="aina-mahel" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://1.bp.blogspot.com/-x6N7lFWYLq4/YJjPVmMXbiI/AAAAAAAAAOw/15qZk8PKoz88bzrBs3WqmIS0_58wyz_iwCLcBGAsYHQ/s640/aina%2Bmahal%2B0.jpg" alt="Aina Mahel">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Aina Mahel (Palace of Mirrors)</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Bhuj, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,000</span>
+                    </div>
+                    <p>Aina Mahel, also known as the Palace of Mirrors, is a stunning 18th-century palace known for its intricate mirror work and European-style architecture. It's one of the most beautiful palaces in Kutch.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Palace of Mirrors - intricate mirror work</li>
+                        <li>European-style architecture</li>
+                        <li>18th-century royal palace</li>
+                        <li>Beautiful interiors</li>
+                        <li>Historical significance</li>
+                        <li>Photography opportunities</li>
+                    </ul>
+                    <a href="booking.html?destination=aina-mahel" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Kutch Museum -->
+            <div id="kutch-museum" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://www.trawell.in/admin/images/upload/151126954Kutch_Museum.jpg" alt="Kutch Museum">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Kutch Museum</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Bhuj, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹800</span>
+                    </div>
+                    <p>Kutch Museum is the oldest museum in Gujarat, established in 1877. It houses an extensive collection of artifacts, textiles, weapons, coins, and exhibits showcasing the rich history and culture of Kutch.</p>
+                    <p><strong>Best Time to Visit:</strong> Throughout the year</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Oldest museum in Gujarat</li>
+                        <li>Rich collection of artifacts</li>
+                        <li>Kutchi textiles and handicrafts</li>
+                        <li>Historical exhibits</li>
+                        <li>Cultural heritage display</li>
+                        <li>Educational experience</li>
+                    </ul>
+                    <a href="booking.html?destination=kutch-museum" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Lakhpat Fort -->
+            <div id="lakhpat" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://www.gujarattourism.com/content/dam/gujrattourism/images/heritage-sites/lakhpat-fort/Lakhpat-Fort-2.jpg" alt="Lakhpat Fort">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Lakhpat Fort</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Lakhpat, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹2,200</span>
+                    </div>
+                    <p>Lakhpat is a fortified town near the India-Pakistan border, known for its historic fort and religious significance. It was once a prosperous port town and is now a ghost town with fascinating history.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Historic fort walls and architecture</li>
+                        <li>Gurudwara - religious significance</li>
+                        <li>Ancient port ruins</li>
+                        <li>Border area views</li>
+                        <li>Photography opportunities</li>
+                    </ul>
+                    <a href="booking.html?destination=lakhpat" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Narayan Sarovar -->
+            <div id="narayan-sarovar" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://tse4.mm.bing.net/th/id/OIP.NoEDPX33qUgMhEQfSxPErQHaFw?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Narayan Sarovar">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Narayan Sarovar</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Narayan Sarovar, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Full Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,800</span>
+                    </div>
+                    <p>Narayan Sarovar is one of the five holy lakes in India and a significant pilgrimage site. The lake is surrounded by temples and offers a serene spiritual experience in the desert landscape.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>One of the five holy lakes of India</li>
+                        <li>Ancient temples around the lake</li>
+                        <li>Spiritual pilgrimage site</li>
+                        <li>Peaceful desert setting</li>
+                        <li>Religious festivals</li>
+                    </ul>
+                    <a href="booking.html?destination=narayan-sarovar" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Koteshwar -->
+            <div id="koteshwar" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://www.gujarattourism.com/content/dam/gujrattourism/images/religious-sites/koteshwar-mahadev-temple/Koteshwar-Mahadev-Temple-1.jpg" alt="Koteshwar">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Koteshwar</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Koteshwar, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,500</span>
+                    </div>
+                    <p>Koteshwar is a coastal town known for its ancient Shiva temple and proximity to the Arabian Sea. It's a peaceful destination combining religious significance with natural beauty.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Ancient Koteshwar Mahadev Temple</li>
+                        <li>Coastal location</li>
+                        <li>Religious significance</li>
+                        <li>Scenic views</li>
+                        <li>Peaceful atmosphere</li>
+                    </ul>
+                    <a href="booking.html?destination=koteshwar" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Matana Madh -->
+            <div id="matana-madh" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://utsav.gov.in/public/uploads/darshan_picture/darshan_6/16578680961691611255.jpg" alt="Matana Madh">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Matana Madh</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Matana, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,200</span>
+                    </div>
+                    <p>Matana Madh is a significant religious site in Kutch, known for its spiritual importance and beautiful architecture. It's a popular pilgrimage destination that attracts devotees from across the region.</p>
+                    <p><strong>Best Time to Visit:</strong> Throughout the year, especially during religious festivals</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Sacred religious site</li>
+                        <li>Beautiful temple architecture</li>
+                        <li>Spiritual atmosphere</li>
+                        <li>Cultural significance</li>
+                    </ul>
+                    <a href="booking.html?destination=matana-madh" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Tapkeshwari Temple -->
+            <div id="pingleshwar" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://www.sadhanaweekly.com/Encyc/2021/4/1/2_04_59_29_Pingleshwar-Mahadev-kutch_1_H@@IGHT_630_W@@IDTH_1200.jpg" alt="Pingleshwar">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Pingleshwar</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Pingleshwar, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,400</span>
+                    </div>
+                    <p>Pingleshwar is a beautiful beach destination known for its pristine coastline and peaceful atmosphere. It's less crowded than other beaches, making it perfect for relaxation and nature lovers.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Pristine beach</li>
+                        <li>Peaceful and less crowded</li>
+                        <li>Sunset views</li>
+                        <li>Beach activities</li>
+                        <li>Natural beauty</li>
+                    </ul>
+                    <a href="booking.html?destination=pingleshwar" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Tapkeshwari Temple -->
+            <div id="tapkeshwari" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Tapakeshwari_Devi_Temple_near_Bhuj_Kutch_Gujarat_Indua.jpg/1200px-Tapakeshwari_Devi_Temple_near_Bhuj_Kutch_Gujarat_Indua.jpg" alt="Tapkeshwari Temple">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Tapkeshwari Temple</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Bhuj, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,000</span>
+                    </div>
+                    <p>Tapkeshwari Temple is an ancient cave temple dedicated to Goddess Tapkeshwari. The temple is carved into a hill and is a significant religious site in the region, known for its unique architecture and spiritual ambiance.</p>
+                    <p><strong>Best Time to Visit:</strong> Throughout the year</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Ancient cave temple</li>
+                        <li>Unique hill-carved architecture</li>
+                        <li>Religious significance</li>
+                        <li>Spiritual atmosphere</li>
+                        <li>Scenic location</li>
+                    </ul>
+                    <a href="booking.html?destination=tapkeshwari" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Pingleshwar -->
+            <div id="pingleshwar" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://www.sadhanaweekly.com/Encyc/2021/4/1/2_04_59_29_Pingleshwar-Mahadev-kutch_1_H@@IGHT_630_W@@IDTH_1200.jpg" alt="Pingleshwar">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Pingleshwar</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Pingleshwar, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,400</span>
+                    </div>
+                    <p>Pingleshwar is a beautiful beach destination known for its pristine coastline and peaceful atmosphere. It's less crowded than other beaches, making it perfect for relaxation and nature lovers.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Pristine beach</li>
+                        <li>Peaceful and less crowded</li>
+                        <li>Sunset views</li>
+                        <li>Beach activities</li>
+                        <li>Natural beauty</li>
+                    </ul>
+                    <a href="booking.html?destination=pingleshwar" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Kutch Desert Wildlife Sanctuary -->
+            <div id="wildlife" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://th.bing.com/th/id/R.e067ec2ee717c7fa52bab91af6da87f8?rik=%2f63wXAm1%2b0qbJQ&riu=http%3a%2f%2fwww.gujaratupdates.com%2fwp-content%2fuploads%2f2017%2f01%2fkutch-desert-wildlife-sanctuary-3071-650x334.jpg&ehk=HEeK4A9do1SrAxSxLsS2M%2fNktgjd5%2b1z3qYTKjbEt%2fU%3d&risl=&pid=ImgRaw&r=0" alt="Wildlife Sanctuary">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Kutch Desert Wildlife Sanctuary</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Kutch District</span>
+                        <span><i class="fas fa-clock"></i> Full Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹2,500</span>
+                    </div>
+                    <p>This sanctuary is home to various species of wildlife adapted to the desert ecosystem. It's a paradise for bird watchers and nature enthusiasts, especially during the winter months when migratory birds visit.</p>
+                    <p><strong>Best Time to Visit:</strong> November to February for bird watching</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Desert wildlife spotting</li>
+                        <li>Migratory bird watching</li>
+                        <li>Flamingo colonies</li>
+                        <li>Wild ass sanctuary</li>
+                        <li>Nature photography</li>
+                    </ul>
+                    <a href="booking.html?destination=wildlife" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Kadiyadhro -->
+            <div id="kadiyadhro" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://saichintala.files.wordpress.com/2023/01/20221230_145403.jpg?w=2048" alt="Kadiyadhro">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Kadiyadhro</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Kadiyadhro, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Full Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,800</span>
+                    </div>
+                    <p>Kadiyadhro is a natural attraction known for its unique geological formations and scenic beauty. It offers visitors a chance to explore the natural wonders of the Kutch region.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Unique geological formations</li>
+                        <li>Natural scenic beauty</li>
+                        <li>Photography opportunities</li>
+                        <li>Nature exploration</li>
+                        <li>Peaceful environment</li>
+                    </ul>
+                    <a href="booking.html?destination=kadiyadhro" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Smrutivan -->
+            <div id="smrutivan" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://media.assettype.com/outlooktraveller/2024-06/612d6b40-350f-4336-9345-8bd83a6497b5/slide5.jpg?w=1200&auto=format%2Ccompress&fit=max" alt="Smrutivan">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Smrutivan</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Bhuj, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,200</span>
+                    </div>
+                    <p>Smrutivan is a memorial park and museum dedicated to the victims of the 2001 Kutch earthquake. It's a place of remembrance, reflection, and learning about the resilience of the people of Kutch.</p>
+                    <p><strong>Best Time to Visit:</strong> Throughout the year</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Memorial park and museum</li>
+                        <li>Historical significance</li>
+                        <li>Peaceful reflection space</li>
+                        <li>Educational exhibits</li>
+                        <li>Beautiful park setting</li>
+                    </ul>
+                    <a href="booking.html?destination=smrutivan" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Kutch Museum -->
+            <div id="kutch-museum" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://www.trawell.in/admin/images/upload/151126954Kutch_Museum.jpg" alt="Kutch Museum">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Kutch Museum</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Bhuj, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹800</span>
+                    </div>
+                    <p>Kutch Museum is the oldest museum in Gujarat, established in 1877. It houses an extensive collection of artifacts, textiles, weapons, coins, and exhibits showcasing the rich history and culture of Kutch.</p>
+                    <p><strong>Best Time to Visit:</strong> Throughout the year</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Oldest museum in Gujarat</li>
+                        <li>Rich collection of artifacts</li>
+                        <li>Kutchi textiles and handicrafts</li>
+                        <li>Historical exhibits</li>
+                        <li>Cultural heritage display</li>
+                        <li>Educational experience</li>
+                    </ul>
+                    <a href="booking.html?destination=kutch-museum" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Aina Mahel -->
+            <div id="aina-mahel" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://1.bp.blogspot.com/-x6N7lFWYLq4/YJjPVmMXbiI/AAAAAAAAAOw/15qZk8PKoz88bzrBs3WqmIS0_58wyz_iwCLcBGAsYHQ/s640/aina%2Bmahal%2B0.jpg" alt="Aina Mahel">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Aina Mahel (Palace of Mirrors)</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Bhuj, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,000</span>
+                    </div>
+                    <p>Aina Mahel, also known as the Palace of Mirrors, is a stunning 18th-century palace known for its intricate mirror work and European-style architecture. It's one of the most beautiful palaces in Kutch.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Palace of Mirrors - intricate mirror work</li>
+                        <li>European-style architecture</li>
+                        <li>18th-century royal palace</li>
+                        <li>Beautiful interiors</li>
+                        <li>Historical significance</li>
+                        <li>Photography opportunities</li>
+                    </ul>
+                    <a href="booking.html?destination=aina-mahel" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Kadiyadhro -->
+            <div id="kadiyadhro" class="destination-detail-card reverse">
+                <div class="destination-detail-image">
+                    <img src="https://saichintala.files.wordpress.com/2023/01/20221230_145403.jpg?w=2048" alt="Kadiyadhro">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Kadiyadhro</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Kadiyadhro, Kutch</span>
+                        <span><i class="fas fa-clock"></i> Full Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,800</span>
+                    </div>
+                    <p>Kadiyadhro is a natural attraction known for its unique geological formations and scenic beauty. It offers visitors a chance to explore the natural wonders of the Kutch region.</p>
+                    <p><strong>Best Time to Visit:</strong> October to March</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Unique geological formations</li>
+                        <li>Natural scenic beauty</li>
+                        <li>Photography opportunities</li>
+                        <li>Nature exploration</li>
+                        <li>Peaceful environment</li>
+                    </ul>
+                    <a href="booking.html?destination=kadiyadhro" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+
+            <!-- Vande Mataram Memorial -->
+            <div id="vande-mataram-memorial" class="destination-detail-card">
+                <div class="destination-detail-image">
+                    <img src="https://th.bing.com/th/id/R.e443484729af4880563044e7fcced5b2?rik=TlDZKNVCwROqnw&riu=http%3a%2f%2fvmm.ashapura.com%2fwp-content%2fuploads%2f2020%2f01%2fPlan-Visit.png&ehk=Kl0AkNmIh2trPJ7Q%2fjJdjufvrJf2FHdTQDhhaWQXYzk%3d&risl=&pid=ImgRaw&r=0" alt="Vande Mataram Memorial">
+                </div>
+                <div class="destination-detail-content">
+                    <h2>Vande Mataram Memorial</h2>
+                    <div class="destination-meta">
+                        <span><i class="fas fa-map-marker-alt"></i> Kutch District</span>
+                        <span><i class="fas fa-clock"></i> Half Day Tour</span>
+                        <span><i class="fas fa-rupee-sign"></i> From ₹1,000</span>
+                    </div>
+                    <p>The Vande Mataram Memorial is a significant monument dedicated to the spirit of patriotism and the freedom struggle. It's a place of national importance and inspiration.</p>
+                    <p><strong>Best Time to Visit:</strong> Throughout the year</p>
+                    <p><strong>Highlights:</strong></p>
+                    <ul>
+                        <li>Patriotic memorial</li>
+                        <li>Historical significance</li>
+                        <li>Inspirational monument</li>
+                        <li>National importance</li>
+                        <li>Educational visit</li>
+                    </ul>
+                    <a href="booking.html?destination=vande-mataram-memorial" class="btn btn-primary">Book This Destination</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Explore Kutch?</h2>
+            <p>Book your journey now and create memories that last a lifetime</p>
+            <a href="booking.html" class="btn btn-primary btn-large">Book Your Trip Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-globe"></i>
+                        <span>INFINITRIP</span>
+                    </div>
+                    <p>Your trusted partner for exploring the infinite beauty of Kutch.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="destinations.html">Destinations</a></li>
+                        <li><a href="booking.html">Book Now</a></li>
+                        <li><a href="index.html#about">About Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="tours.html">Group Tours</a></li>
+                        <li><a href="booking.html">Custom Packages</a></li>
+                        <li><a href="booking.html">Hotel Booking</a></li>
+                        <li><a href="vehicles.html">Transportation</a></li>
+                        <li><a href="booking.html">Cab Booking</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>For Drivers</h3>
+                    <ul>
+                        <li><a href="signin.html"><i class="fas fa-sign-in-alt"></i> Driver Login</a></li>
+                        <li><a href="driver-dashboard.html">Manage Rides</a></li>
+                        <li><a href="vehicles.html">Vehicle Gallery</a></li>
+                        <li><a href="index.html#contact">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 INFINITRIP. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/919512495229?text=Hello%20INFINITRIP!%20I%20would%20like%20to%20know%20more%20about%20your%20destinations." 
+       class="whatsapp-button" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Infini AI Button -->
+    <button id="infiniAIButton" class="infini-ai-button" aria-label="Open Infini AI Chat">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <!-- Infini AI Chat Container -->
+    <div id="infiniAIChat" class="infini-ai-chat">
+        <div class="chat-header">
+            <h3>
+                <i class="fas fa-robot"></i>
+                Infini AI
+            </h3>
+            <button id="closeChat" class="close-chat" aria-label="Close chat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Ask me about Kutch destinations, packages, or pricing...">
+            <button onclick="sendChatMessage()" class="send-button" aria-label="Send message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="itinerary.js"></script>
+    <script src="auth.js"></script>
+    <script src="infini-ai.js"></script>
+    <script>
+        function toggleItinerary(id) {
+            const content = document.getElementById(id);
+            const button = content.previousElementSibling;
+            const icon = button.querySelector('.fa-chevron-down');
+            
+            if (content.style.display === 'none') {
+                content.style.display = 'block';
+                icon.style.transform = 'rotate(180deg)';
+            } else {
+                content.style.display = 'none';
+                icon.style.transform = 'rotate(0deg)';
+            }
+        }
+    </script>
+</body>
+</html>
+
+

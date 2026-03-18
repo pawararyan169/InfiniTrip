@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tours & Packages - INFINITRIP</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-additional.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tours-page {
+            padding: 2rem 0 5rem;
+        }
+        .search-filters {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+        }
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .filter-group label {
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-group label i {
+            color: var(--primary-color);
+        }
+        .filter-group input,
+        .filter-group select {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        .filter-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        .tours-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        .tour-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .tour-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+        .tour-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .tour-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .tour-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+        .tour-title {
+            font-size: 1.3rem;
+            color: var(--dark-color);
+            margin: 0;
+        }
+        .tour-type-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .tour-type-badge.basic {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .tour-type-badge.premium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .tour-type-badge.luxury {
+            background: #fce7f3;
+            color: #9f1239;
+        }
+        .tour-meta {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        .tour-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .tour-meta i {
+            color: var(--primary-color);
+        }
+        .tour-destinations {
+            margin-bottom: 1rem;
+            flex: 1;
+        }
+        .tour-destinations h4 {
+            font-size: 0.9rem;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+        }
+        .tour-destinations ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .tour-destinations li {
+            background: var(--light-color);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+        }
+        .tour-price {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 1rem 0;
+        }
+        .tour-price span {
+            font-size: 0.9rem;
+            color: var(--text-color);
+            font-weight: normal;
+        }
+        .tour-includes {
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .tour-includes h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        .tour-includes ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .tour-includes li {
+            padding: 0.25rem 0;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tour-includes li i {
+            color: var(--secondary-color);
+            font-size: 0.8rem;
+        }
+        .no-tours {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-color);
+        }
+        .no-tours i {
+            font-size: 4rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .custom-package-builder {
+            background: var(--light-color);
+            padding: 3rem 0;
+            margin-top: 3rem;
+        }
+        .package-builder-content {
+            background: var(--white);
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+        .builder-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .builder-step {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: border-color 0.3s;
+        }
+        .builder-step.active {
+            border-color: var(--primary-color);
+            background: #eff6ff;
+        }
+        .builder-step h4 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .builder-step h4 i {
+            color: var(--primary-color);
+        }
+        .destination-checkboxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.75rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .destination-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .destination-checkbox input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+        .builder-summary {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 2rem;
+        }
+        .travel-services {
+            padding: 5rem 0;
+            background: var(--light-color);
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .service-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+        .service-card i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+        .service-card h3 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        /* Tour Details Modal */
+        .tour-details-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .tour-details-modal.active {
+            display: block;
+            opacity: 1;
+        }
+        .tour-details-content {
+            background: white;
+            max-width: 900px;
+            margin: 2rem auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .close-tour-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            z-index: 10;
+            transition: all 0.3s;
+        }
+        .close-tour-modal:hover {
+            background: var(--danger);
+            color: white;
+            transform: rotate(90deg);
+        }
+        .tour-details-header {
+            position: relative;
+        }
+        .tour-details-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .tour-details-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            padding: 2rem;
+            color: white;
+        }
+        .tour-details-title h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+        }
+        .tour-details-title .tour-type-badge {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        .tour-details-meta {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            font-size: 0.95rem;
+        }
+        .tour-details-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .tour-details-body {
+            padding: 2.5rem;
+        }
+        .tour-details-section {
+            margin-bottom: 2rem;
+        }
+        .tour-details-section h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .tour-details-section h3 i {
+            font-size: 1.3rem;
+        }
+        .tour-details-section p {
+            line-height: 1.8;
+            color: var(--text);
+            font-size: 1rem;
+        }
+        .tour-destinations-list,
+        .tour-highlights-list,
+        .tour-includes-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.75rem;
+        }
+        .tour-destinations-list li,
+        .tour-highlights-list li,
+        .tour-includes-list li {
+            padding: 0.75rem;
+            background: var(--light-gray);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+        .tour-highlights-list li i {
+            color: var(--warning);
+        }
+        .tour-includes-list li i {
+            color: var(--success);
+        }
+        .tour-itinerary-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .tour-itinerary-list li {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: var(--light-gray);
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        .tour-details-footer {
+            padding: 2rem 2.5rem;
+            background: var(--light-gray);
+            border-top: 2px solid var(--border);
+            text-align: center;
+        }
+        .btn-large {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+        }
+        @media (max-width: 768px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            .tours-grid {
+                grid-template-columns: 1fr;
+            }
+            .filter-actions {
+                flex-direction: column;
+            }
+            .builder-steps {
+                grid-template-columns: 1fr;
+            }
+            .tour-details-content {
+                margin: 1rem;
+                border-radius: 15px;
+            }
+            .tour-details-image {
+                height: 200px;
+            }
+            .tour-details-title {
+                padding: 1.5rem;
+            }
+            .tour-details-title h2 {
+                font-size: 1.5rem;
+            }
+            .tour-details-body {
+                padding: 1.5rem;
+            }
+            .tour-destinations-list,
+            .tour-highlights-list,
+            .tour-includes-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="images/logo.png" alt="INFINITRIP Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <span style="display: none;"><i class="fas fa-globe"></i> INFINITRIP</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="destinations.html">Destinations</a></li>
+                    <li><a href="tours.html" class="active">Tours</a></li>
+                    <li><a href="booking.html">Book Now</a></li>
+                    <li><a href="vehicles.html">Vehicles</a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                    <!-- Login/User name will be added dynamically by auth.js -->
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-overlay"></div>
+        <div class="page-header-content">
+            <h1>Explore Our Tours</h1>
+            <p>Find the perfect tour package for your Kutch adventure</p>
+        </div>
+    </section>
+
+    <!-- Tours Page -->
+    <section class="tours-page">
+        <div class="container">
+            <!-- Search and Filters -->
+            <div class="search-filters">
+                <h2 style="margin-bottom: 1.5rem; color: var(--dark-color);">
+                    <i class="fas fa-filter"></i> Search & Filter Tours
+                </h2>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="budgetFilter">
+                            <i class="fas fa-rupee-sign"></i> Budget (₹)
+                        </label>
+                        <input type="number" id="budgetFilter" placeholder="Max budget" min="0">
+                    </div>
+                    <div class="filter-group">
+                        <label for="daysFilter">
+                            <i class="fas fa-calendar-day"></i> Days
+                        </label>
+                        <input type="number" id="daysFilter" placeholder="Number of days" min="1">
+                    </div>
+                    <div class="filter-group">
+                        <label for="nightsFilter">
+                            <i class="fas fa-moon"></i> Nights
+                        </label>
+                        <input type="number" id="nightsFilter" placeholder="Number of nights" min="0">
+                    </div>
+                    <div class="filter-group">
+                        <label for="typeFilter">
+                            <i class="fas fa-tag"></i> Tour Type
+                        </label>
+                        <select id="typeFilter">
+                            <option value="">All Types</option>
+                            <option value="basic">Basic</option>
+                            <option value="premium">Premium</option>
+                            <option value="luxury">Luxury</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="locationFilter">
+                            <i class="fas fa-map-marker-alt"></i> Location
+                        </label>
+                        <select id="locationFilter">
+                            <option value="">All Locations</option>
+                            <option value="rann">Rann of Kutch</option>
+                            <option value="dholavira">Dholavira</option>
+                            <option value="mandvi">Mandvi Beach</option>
+                            <option value="bhuj">Bhuj</option>
+                            <option value="dhordo">Dhordo</option>
+                            <option value="road-to-heaven">Road to Heaven</option>
+                            <option value="kala-dungar">Kala Dungar</option>
+                            <option value="vijay-vilas">Vijay Vilas Palace</option>
+                            <option value="aina-mahel">Aina Mahel</option>
+                            <option value="kutch-museum">Kutch Museum</option>
+                            <option value="lakhpat">Lakhpat Fort</option>
+                            <option value="narayan-sarovar">Narayan Sarovar</option>
+                            <option value="koteshwar">Koteshwar</option>
+                            <option value="matana-madh">Matana Madh</option>
+                            <option value="tapkeshwari">Tapkeshwari Temple</option>
+                            <option value="pingleshwar">Pingleshwar</option>
+                            <option value="wildlife">Wildlife Sanctuary</option>
+                            <option value="kadiyadhro">Kadiyadhro</option>
+                            <option value="smrutivan">Smrutivan</option>
+                            <option value="vande-mataram-memorial">Vande Mataram Memorial</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button onclick="clearFilters()" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i> Clear Filters
+                    </button>
+                    <button onclick="searchTours()" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Search Tours
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tours Grid -->
+            <div id="toursContainer">
+                <div class="tours-grid" id="toursGrid">
+                    <!-- Tours will be dynamically generated here -->
+                </div>
+            </div>
+
+            <!-- No Tours Message -->
+            <div id="noTours" class="no-tours" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h3>No tours found</h3>
+                <p>Try adjusting your filters or create a custom package</p>
+            </div>
+
+            <!-- Custom Package Builder -->
+            <section class="custom-package-builder">
+                <div class="container">
+                    <h2 class="section-title">Create Your Custom Package</h2>
+                    <div class="package-builder-content">
+                        <div class="builder-steps">
+                            <div class="builder-step active" id="step1">
+                                <h4><i class="fas fa-map-marked-alt"></i> Step 1: Select Destinations</h4>
+                                <div class="destination-checkboxes" id="destinationCheckboxes">
+                                    <!-- Will be populated by JavaScript -->
+                                </div>
+                            </div>
+                            <div class="builder-step" id="step2">
+                                <h4><i class="fas fa-calendar-alt"></i> Step 2: Duration</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Days</label>
+                                        <input type="number" id="customDays" min="1" value="3">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nights</label>
+                                        <input type="number" id="customNights" min="0" value="2">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="builder-step" id="step3">
+                                <h4><i class="fas fa-tag"></i> Step 3: Package Type</h4>
+                                <div class="form-group">
+                                    <select id="customPackageType">
+                                        <option value="basic">Basic Package</option>
+                                        <option value="premium">Premium Package</option>
+                                        <option value="luxury">Luxury Package</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="builder-step" id="step4">
+                                <h4><i class="fas fa-users"></i> Step 4: Travelers</h4>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Adults</label>
+                                        <input type="number" id="customAdults" min="1" value="2">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Children</label>
+                                        <input type="number" id="customChildren" min="0" value="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="builder-summary" id="customPackageSummary">
+                            <h3>Package Summary</h3>
+                            <div id="packageDetails"></div>
+                            <div style="margin-top: 1.5rem;">
+                                <button onclick="addCustomPackageToBooking()" class="btn btn-primary btn-large">
+                                    <i class="fas fa-shopping-cart"></i> Add to Booking
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Travel Services -->
+            <section class="travel-services">
+                <div class="container">
+                    <h2 class="section-title">Our Travel Services</h2>
+                    <div class="services-grid">
+                        <div class="service-card">
+                            <i class="fas fa-route"></i>
+                            <h3>Transportation</h3>
+                            <p>AC Buses, Private Cars, SUVs, Tempo Travellers, and Self-Drive options available for all your travel needs.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="fas fa-hotel"></i>
+                            <h3>Accommodation</h3>
+                            <p>From desert tents to luxury resorts, we offer a wide range of accommodation options to suit every budget.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="fas fa-utensils"></i>
+                            <h3>Meals</h3>
+                            <p>Enjoy authentic Kutchi cuisine and local delicacies. We offer meal packages for all our tours.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="fas fa-user-tie"></i>
+                            <h3>Expert Guides</h3>
+                            <p>Our experienced local guides will make your journey informative and memorable with their knowledge of Kutch.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="fas fa-camera"></i>
+                            <h3>Photography</h3>
+                            <p>Capture your memories with our photography services. We know the best spots for stunning photos.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="fas fa-headset"></i>
+                            <h3>24/7 Support</h3>
+                            <p>Round-the-clock customer support to assist you anytime, anywhere during your journey.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <i class="fas fa-globe"></i>
+                        <span>INFINITRIP</span>
+                    </div>
+                    <p>Your trusted partner for exploring the infinite beauty of Kutch.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="destinations.html">Destinations</a></li>
+                        <li><a href="tours.html">Tours</a></li>
+                        <li><a href="booking.html">Book Now</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Services</h3>
+                    <ul>
+                        <li><a href="tours.html">Group Tours</a></li>
+                        <li><a href="booking.html">Custom Packages</a></li>
+                        <li><a href="booking.html">Hotel Booking</a></li>
+                        <li><a href="vehicles.html">Transportation</a></li>
+                        <li><a href="booking.html">Cab Booking</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>For Drivers</h3>
+                    <ul>
+                        <li><a href="signin.html"><i class="fas fa-sign-in-alt"></i> Driver Login</a></li>
+                        <li><a href="driver-dashboard.html">Manage Rides</a></li>
+                        <li><a href="vehicles.html">Vehicle Gallery</a></li>
+                        <li><a href="index.html#contact">Contact Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 INFINITRIP. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/919512495229?text=Hello%20INFINITRIP!%20I%20would%20like%20to%20know%20more%20about%20your%20tours." 
+       class="whatsapp-button" 
+       target="_blank" 
+       rel="noopener noreferrer"
+       aria-label="Contact us on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Infini AI Button -->
+    <button id="infiniAIButton" class="infini-ai-button" aria-label="Open Infini AI Chat">
+        <i class="fas fa-robot"></i>
+    </button>
+
+    <!-- Infini AI Chat Container -->
+    <div id="infiniAIChat" class="infini-ai-chat">
+        <div class="chat-header">
+            <h3>
+                <i class="fas fa-robot"></i>
+                Infini AI
+            </h3>
+            <button id="closeChat" class="close-chat" aria-label="Close chat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <div class="chat-input-container">
+            <input type="text" id="chatInput" class="chat-input" placeholder="Ask me about Kutch destinations, packages, or pricing...">
+            <button onclick="sendChatMessage()" class="send-button" aria-label="Send message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="tours.js"></script>
+    <script src="infini-ai.js"></script>
+</body>
+</html>
+
+

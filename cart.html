@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - INFINITRIP</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-additional.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cart-section {
+            padding: 5rem 0;
+            background: var(--light);
+            min-height: 70vh;
+        }
+
+        .cart-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .cart-header {
+            margin-bottom: 2rem;
+        }
+
+        .cart-header h1 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+        }
+
+        .cart-items {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .cart-item-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .cart-item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-details h3 {
+            font-size: 1.25rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-type {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .cart-item-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 1rem 0;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.5rem;
+        }
+
+        .quantity-btn {
+            background: var(--light);
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+            transition: all 0.2s;
+        }
+
+        .quantity-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .remove-item {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        .remove-item:hover {
+            background: var(--danger);
+            opacity: 0.9;
+        }
+
+        .cart-summary {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        .cart-summary h2 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .summary-item.total {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            padding-top: 1rem;
+            border-top: 2px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .empty-cart i {
+            font-size: 5rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .empty-cart h2 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+
+        .empty-cart p {
+            color: var(--text);
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .cart-content {
+                grid-template-columns: 1fr;
+            }
+
+            .cart-item {
+                flex-direction: column;
+            }
+
+            .cart-item-image {
+                width: 100%;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="images/logo.png" alt="INFINITRIP Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <span style="display: none;"><i class="fas fa-globe"></i> INFINITRIP</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="destinations.html">Destinations</a></li>
+                    <li><a href="tours.html">Tours</a></li>
+                    <li><a href="booking.html">Book Now</a></li>
+                    <li><a href="vehicles.html">Vehicles</a></li>
+                    <li><a href="cart.html" class="active">Cart <span id="cartBadge" class="cart-badge" style="display: none;">0</span></a></li>
+                    <li><a href="index.html#about">About</a></li>
+                    <li><a href="index.html#contact">Contact</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="page-header-overlay"></div>
+        <div class="page-header-content">
+            <h1>Shopping Cart</h1>
+            <p>Review your selected items</p>
+        </div>
+    </section>
+
+    <!-- Cart Section -->
+    <section class="cart-section">
+        <div class="cart-container">
+            <div id="cartContent">
+                <!-- Cart items will be rendered here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>INFINITRIP</h3>
+                    <p>Your gateway to exploring the beautiful destinations of Kutch, Gujarat. Experience authentic culture, stunning landscapes, and unforgettable memories.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="destinations.html">Destinations</a></li>
+                        <li><a href="tours.html">Tours</a></li>
+                        <li><a href="booking.html">Book Now</a></li>
+                        <li><a href="vehicles.html">Vehicles</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>For Drivers</h3>
+                    <ul>
+                        <li><a href="signin.html"><i class="fas fa-sign-in-alt"></i> Driver Login</a></li>
+                        <li><a href="driver-dashboard.html">Manage Rides</a></li>
+                        <li><a href="vehicles.html">Vehicle Gallery</a></li>
+                        <li><a href="index.html#contact">Contact Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contact</h3>
+                    <ul>
+                        <li><i class="fas fa-phone"></i> +91 95124 95229</li>
+                        <li><i class="fas fa-envelope"></i> info@infinitrip.in</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Kutch, Gujarat, India</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 INFINITRIP. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="auth.js"></script>
+    <script src="cart.js"></script>
+    <script>
+        // Render cart items
+        function renderCart() {
+            const cart = getCart();
+            const cartContent = document.getElementById('cartContent');
+            
+            if (cart.length === 0) {
+                cartContent.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h2>Your cart is empty</h2>
+                        <p>Add destinations or vehicles to your cart to get started!</p>
+                        <a href="destinations.html" class="btn btn-primary btn-large">
+                            <i class="fas fa-map-marker-alt"></i> Browse Destinations
+                        </a>
+                        <a href="vehicles.html" class="btn btn-secondary btn-large" style="margin-left: 1rem;">
+                            <i class="fas fa-car"></i> Browse Vehicles
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            let itemsHTML = `
+                <div class="cart-header">
+                    <h1><i class="fas fa-shopping-cart"></i> Your Cart (${cart.length} ${cart.length === 1 ? 'item' : 'items'})</h1>
+                </div>
+                <div class="cart-content">
+                    <div class="cart-items">
+            `;
+            
+            cart.forEach(item => {
+                const total = item.price * item.quantity;
+                itemsHTML += `
+                    <div class="cart-item">
+                        <div class="cart-item-image">
+                            <img src="${item.image}" alt="${item.name}" onerror="this.src='https://via.placeholder.com/150?text=Image'">
+                        </div>
+                        <div class="cart-item-details">
+                            <span class="cart-item-type">${item.type === 'vehicle' ? 'Vehicle' : 'Destination'}</span>
+                            <h3>${item.name}</h3>
+                            <div class="cart-item-price">₹${item.price.toLocaleString()}/km</div>
+                            <div class="cart-item-quantity">
+                                <label>Quantity:</label>
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn" onclick="updateCartQuantity('${item.id}', '${item.type}', ${item.quantity - 1})">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="quantity-input" value="${item.quantity}" min="1" 
+                                           onchange="updateCartQuantity('${item.id}', '${item.type}', parseInt(this.value))">
+                                    <button class="quantity-btn" onclick="updateCartQuantity('${item.id}', '${item.type}', ${item.quantity + 1})">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                                <span style="margin-left: auto; font-weight: 600; color: var(--dark);">
+                                    Total: ₹${total.toLocaleString()}
+                                </span>
+                            </div>
+                            <button class="remove-item" onclick="removeFromCart('${item.id}', '${item.type}')">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            const cartTotal = getCartTotal();
+            
+            itemsHTML += `
+                    </div>
+                    <div class="cart-summary">
+                        <h2>Order Summary</h2>
+                        <div class="summary-item">
+                            <span>Subtotal (${getCartCount()} ${getCartCount() === 1 ? 'item' : 'items'})</span>
+                            <span>₹${cartTotal.toLocaleString()}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>Service Charge</span>
+                            <span>₹${Math.round(cartTotal * 0.05).toLocaleString()}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span>GST (18%)</span>
+                            <span>₹${Math.round(cartTotal * 0.18).toLocaleString()}</span>
+                        </div>
+                        <div class="summary-item total">
+                            <span>Total Amount</span>
+                            <span>₹${Math.round(cartTotal * 1.23).toLocaleString()}</span>
+                        </div>
+                        <a href="payment.html" class="btn btn-primary btn-large" style="width: 100%; margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <i class="fas fa-lock"></i> Proceed to Checkout
+                        </a>
+                        <a href="destinations.html" class="btn btn-secondary" style="width: 100%; margin-top: 1rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                            <i class="fas fa-arrow-left"></i> Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            `;
+            
+            cartContent.innerHTML = itemsHTML;
+        }
+        
+        // Initialize cart on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCart();
+            updateCartCount();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Dashboard - INFINITRIP</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles-additional.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .dashboard-section {
+            padding: 2rem 0 5rem;
+            background: var(--light);
+            min-height: 90vh;
+        }
+
+        .dashboard-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+
+        .driver-info h2 {
+            font-size: 1.75rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .driver-info p {
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .logout-btn {
+            padding: 0.75rem 1.5rem;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-card .icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-card.pending .icon {
+            background: var(--warning);
+        }
+
+        .stat-card.accepted .icon {
+            background: var(--success);
+        }
+
+        .stat-card.declined .icon {
+            background: var(--danger);
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        .rides-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .ride-card {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .ride-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-light);
+        }
+
+        .ride-card.pending {
+            border-left: 4px solid var(--warning);
+        }
+
+        .ride-card.accepted {
+            border-left: 4px solid var(--success);
+        }
+
+        .ride-card.declined {
+            border-left: 4px solid var(--danger);
+            opacity: 0.7;
+        }
+
+        .ride-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .ride-id {
+            font-size: 1.1rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .ride-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .ride-status.pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .ride-status.accepted {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success);
+        }
+
+        .ride-status.declined {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .ride-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+
+        .detail-item i {
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-top: 0.25rem;
+        }
+
+        .detail-item-content h4 {
+            font-size: 0.85rem;
+            color: var(--text);
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-item-content p {
+            font-size: 1rem;
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .ride-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-accept {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            background: var(--success);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 150px;
+        }
+
+        .btn-accept:hover {
+            background: #16a34a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-decline {
+            flex: 1;
+            padding: 0.875rem 1.5rem;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            min-width: 150px;
+        }
+
+        .btn-decline:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-accept:disabled,
+        .btn-decline:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .no-rides {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text);
+        }
+
+        .no-rides i {
+            font-size: 4rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .no-rides h3 {
+            font-size: 1.5rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.75rem;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .close-modal {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: var(--light);
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .close-modal:hover {
+            background: var(--primary);
+            color: white;
+            transform: rotate(90deg);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .ride-details {
+                grid-template-columns: 1fr;
+            }
+
+            .ride-actions {
+                flex-direction: column;
+            }
+
+            .btn-accept,
+            .btn-decline {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">
+                    <img src="images/logo.png" alt="INFINITRIP Logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                    <span style="display: none;"><i class="fas fa-globe"></i> INFINITRIP</span>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="driver-dashboard.html" class="active">Dashboard</a></li>
+                    <li><a href="vehicles.html">Vehicles</a></li>
+                    <li class="user-name-item" id="driverNameItem" style="display: none;"></li>
+                    <li><a href="#" class="logout-link" onclick="logout(); return false;"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard-section">
+        <div class="container">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <div class="driver-info">
+                    <h2 id="driverName">Driver Dashboard</h2>
+                    <p id="driverEmail">Loading...</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card pending">
+                    <div class="icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 id="pendingCount">0</h3>
+                    <p>Pending Rides</p>
+                </div>
+                <div class="stat-card accepted">
+                    <div class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3 id="acceptedCount">0</h3>
+                    <p>Accepted Rides</p>
+                </div>
+                <div class="stat-card declined">
+                    <div class="icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <h3 id="declinedCount">0</h3>
+                    <p>Declined Rides</p>
+                </div>
+            </div>
+
+            <!-- Rides Section -->
+            <div class="rides-section">
+                <h2 class="section-title">
+                    <i class="fas fa-list"></i> Ride Requests
+                </h2>
+                <div id="ridesContainer">
+                    <div class="no-rides">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No Ride Requests</h3>
+                        <p>You don't have any ride requests yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ride Detail Modal -->
+    <div id="rideDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Ride Details</h2>
+                <button class="close-modal" onclick="closeRideModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="rideDetailContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Check if driver is logged in
+        function checkDriverLogin() {
+            const session = localStorage.getItem('driverSession');
+            const userRole = localStorage.getItem('userRole');
+            if (!session || userRole !== 'driver') {
+                window.location.href = 'signin.html';
+                return null;
+            }
+            try {
+                return JSON.parse(session);
+            } catch (e) {
+                console.error('Error parsing driver session:', e);
+                window.location.href = 'signin.html';
+                return null;
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('driverSession');
+            localStorage.removeItem('userRole');
+            window.location.href = 'signin.html';
+        }
+
+        // Load driver info
+        function loadDriverInfo() {
+            const session = checkDriverLogin();
+            if (session) {
+                document.getElementById('driverName').textContent = session.name + "'s Dashboard";
+                document.getElementById('driverEmail').textContent = session.email;
+            }
+        }
+
+        // Load ride requests
+        function loadRideRequests() {
+            const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+            const ridesContainer = document.getElementById('ridesContainer');
+            
+            if (rideRequests.length === 0) {
+                ridesContainer.innerHTML = `
+                    <div class="no-rides">
+                        <i class="fas fa-inbox"></i>
+                        <h3>No Ride Requests</h3>
+                        <p>You don't have any ride requests yet.</p>
+                    </div>
+                `;
+                updateStats();
+                return;
+            }
+
+            // Sort by date (newest first)
+            rideRequests.sort((a, b) => new Date(b.createdAt || b.bookingDate) - new Date(a.createdAt || a.bookingDate));
+
+            let html = '';
+            rideRequests.forEach((ride, index) => {
+                const status = ride.driverStatus || 'pending';
+                const requestId = ride.requestId || ride.id;
+                
+                html += `
+                    <div class="ride-card ${status}" data-index="${index}">
+                        <div class="ride-header">
+                            <div>
+                                <div class="ride-id">Request ID: ${requestId}</div>
+                                <div style="margin-top: 0.5rem; color: var(--text); font-size: 0.9rem;">
+                                    Booking Reference: ${ride.id}
+                                </div>
+                            </div>
+                            <span class="ride-status ${status}">${status}</span>
+                        </div>
+                        <div class="ride-details">
+                            <div class="detail-item">
+                                <i class="fas fa-user"></i>
+                                <div class="detail-item-content">
+                                    <h4>Customer</h4>
+                                    <p>${ride.name}</p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-phone"></i>
+                                <div class="detail-item-content">
+                                    <h4>Phone</h4>
+                                    <p>${ride.phone}</p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-car"></i>
+                                <div class="detail-item-content">
+                                    <h4>Vehicle</h4>
+                                    <p>${ride.vehicleCategory || 'Not specified'}</p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-pin"></i>
+                                <div class="detail-item-content">
+                                    <h4>Pickup</h4>
+                                    <p>${ride.pickupLocation || 'Not specified'}</p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div class="detail-item-content">
+                                    <h4>Drop</h4>
+                                    <p>${ride.dropLocation || 'Not specified'}</p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                <div class="detail-item-content">
+                                    <h4>Date & Time</h4>
+                                    <p>${ride.pickupDate || 'Not specified'} ${ride.pickupTime || ''}</p>
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-users"></i>
+                                <div class="detail-item-content">
+                                    <h4>Passengers</h4>
+                                    <p>${ride.adults || 1} Adults, ${ride.children || 0} Children</p>
+                                </div>
+                            </div>
+                        </div>
+                        ${ride.specialRequirements ? `
+                            <div style="margin-top: 1rem; padding: 1rem; background: rgba(249, 115, 22, 0.1); border-radius: 8px;">
+                                <strong>Special Requirements:</strong> ${ride.specialRequirements}
+                            </div>
+                        ` : ''}
+                        ${status === 'pending' ? `
+                            <div class="ride-actions">
+                                <button class="btn-accept" onclick="acceptRide(${index})">
+                                    <i class="fas fa-check"></i> Accept Ride
+                                </button>
+                                <button class="btn-decline" onclick="declineRide(${index})">
+                                    <i class="fas fa-times"></i> Decline Ride
+                                </button>
+                            </div>
+                        ` : `
+                            <div style="margin-top: 1rem; padding: 1rem; background: ${status === 'accepted' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)'}; border-radius: 8px; text-align: center; color: ${status === 'accepted' ? 'var(--success)' : 'var(--danger)'}; font-weight: 600;">
+                                Ride ${status === 'accepted' ? 'Accepted' : 'Declined'}
+                            </div>
+                        `}
+                    </div>
+                `;
+            });
+
+            ridesContainer.innerHTML = html;
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+            const pending = rideRequests.filter(r => (r.driverStatus || 'pending') === 'pending').length;
+            const accepted = rideRequests.filter(r => (r.driverStatus || '') === 'accepted').length;
+            const declined = rideRequests.filter(r => (r.driverStatus || '') === 'declined').length;
+
+            document.getElementById('pendingCount').textContent = pending;
+            document.getElementById('acceptedCount').textContent = accepted;
+            document.getElementById('declinedCount').textContent = declined;
+        }
+
+        // Accept ride
+        function acceptRide(index) {
+            const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+            if (rideRequests[index]) {
+                rideRequests[index].driverStatus = 'accepted';
+                rideRequests[index].acceptedAt = new Date().toISOString();
+                localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
+
+                // Also update in bookings if exists
+                const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+                const booking = bookings.find(b => b.id === rideRequests[index].id);
+                if (booking) {
+                    booking.driverStatus = 'accepted';
+                    localStorage.setItem('bookings', JSON.stringify(bookings));
+                }
+
+                loadRideRequests();
+                alert('Ride accepted successfully!');
+            }
+        }
+
+        // Decline ride
+        function declineRide(index) {
+            if (!confirm('Are you sure you want to decline this ride?')) {
+                return;
+            }
+
+            const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+            if (rideRequests[index]) {
+                rideRequests[index].driverStatus = 'declined';
+                rideRequests[index].declinedAt = new Date().toISOString();
+                localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
+
+                // Also update in bookings if exists
+                const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+                const booking = bookings.find(b => b.id === rideRequests[index].id);
+                if (booking) {
+                    booking.driverStatus = 'declined';
+                    localStorage.setItem('bookings', JSON.stringify(bookings));
+                }
+
+                loadRideRequests();
+                alert('Ride declined.');
+            }
+        }
+
+        // Close ride modal
+        function closeRideModal() {
+            document.getElementById('rideDetailModal').classList.remove('active');
+        }
+
+        // Update navigation with driver name
+        function updateDriverNavigation() {
+            const session = checkDriverLogin();
+            if (session) {
+                const driverNameItem = document.getElementById('driverNameItem');
+                if (driverNameItem) {
+                    driverNameItem.style.display = 'list-item';
+                    driverNameItem.innerHTML = `<a href="driver-dashboard.html" class="user-link"><i class="fas fa-car-side"></i> ${session.name}</a>`;
+                }
+            }
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDriverInfo();
+            loadRideRequests();
+            updateDriverNavigation();
+            
+            // Refresh every 30 seconds
+            setInterval(loadRideRequests, 30000);
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
+
