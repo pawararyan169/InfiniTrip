@@ -61,6 +61,50 @@ function getUsers() {
     return users ? JSON.parse(users) : [];
 }
 
+function getDrivers() {
+    try {
+        const raw = localStorage.getItem('drivers');
+        return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveDrivers(drivers) {
+    localStorage.setItem('drivers', JSON.stringify(drivers));
+}
+
+function getPayments() {
+    try {
+        const raw = localStorage.getItem('payments');
+        return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function escapeAdminHtml(str) {
+    if (str == null || str === '') return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function driverStatusBadgeClass(status) {
+    switch (status) {
+        case 'pending':
+            return 'badge-warning';
+        case 'rejected':
+            return 'badge-danger';
+        case 'active':
+            return 'badge-success';
+        default:
+            return 'badge-info';
+    }
+}
+
 // Get destinations data
 function getDestinations() {
     // Get from script.js prices or use default
@@ -112,18 +156,31 @@ function loadDashboardData() {
     const bookings = getBookings();
     const users = getUsers();
     const destinations = getDestinations();
+    const drivers = getDrivers();
+    const payments = getPayments();
     
     // Calculate statistics
     const totalBookings = bookings.length;
     const totalUsers = users.length;
     const totalRevenue = bookings.reduce((sum, booking) => sum + (parseFloat(booking.totalPrice) || 0), 0);
     const totalDestinations = Object.keys(destinations).length;
+    const paymentVolume = payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0);
     
     // Update dashboard stats
-    document.getElementById('totalBookings').textContent = totalBookings;
-    document.getElementById('totalUsers').textContent = totalUsers;
-    document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
-    document.getElementById('totalDestinations').textContent = totalDestinations;
+    const elBookings = document.getElementById('totalBookings');
+    const elUsers = document.getElementById('totalUsers');
+    const elRevenue = document.getElementById('totalRevenue');
+    const elDest = document.getElementById('totalDestinations');
+    const elDrivers = document.getElementById('totalDrivers');
+    const elPayments = document.getElementById('totalPayments');
+    const elPaymentVol = document.getElementById('totalPaymentVolume');
+    if (elBookings) elBookings.textContent = totalBookings;
+    if (elUsers) elUsers.textContent = totalUsers;
+    if (elRevenue) elRevenue.textContent = `₹${totalRevenue.toLocaleString()}`;
+    if (elDest) elDest.textContent = totalDestinations;
+    if (elDrivers) elDrivers.textContent = drivers.length;
+    if (elPayments) elPayments.textContent = payments.length;
+    if (elPaymentVol) elPaymentVol.textContent = `₹${paymentVolume.toLocaleString()}`;
     
     // Load recent bookings
     const recentBookings = bookings.slice(-5).reverse();
@@ -215,6 +272,7 @@ function viewBooking(index) {
             <p><strong>Customer Name:</strong> ${booking.name}</p>
             <p><strong>Email:</strong> ${booking.email}</p>
             <p><strong>Phone:</strong> ${booking.phone}</p>
+            <p><strong>Booking Type:</strong> ${booking.bookingType || 'tour'}</p>
             <p><strong>Destination:</strong> ${booking.destination}</p>
             <p><strong>Package Type:</strong> ${booking.packageType}</p>
             <p><strong>Travel Date:</strong> ${booking.travelDate}</p>
@@ -224,6 +282,8 @@ function viewBooking(index) {
             <p><strong>Accommodation:</strong> ${booking.accommodation}</p>
             <p><strong>Total Price:</strong> ₹${(parseFloat(booking.totalPrice) || 0).toLocaleString()}</p>
             <p><strong>Status:</strong> <span class="badge ${getStatusBadgeClass(booking.status)}">${booking.status || 'Pending'}</span></p>
+            <p><strong>Payment:</strong> ${booking.paymentStatus || 'unpaid'} ${booking.paymentId ? `(ID: #${booking.paymentId})` : ''}</p>
+            <p><strong>Assigned Driver:</strong> ${booking.assignedDriverName || booking.assignedDriverEmail || 'Not assigned'}</p>
         </div>
     `);
     document.body.appendChild(modal);
@@ -235,6 +295,14 @@ function editBooking(index) {
     
     if (!booking) return;
     
+    const drivers = getDrivers().filter(d => (d.status || 'active') === 'active');
+    const driverOptions = ['<option value="">Unassigned</option>']
+        .concat(drivers.map(d => {
+            const selected = String(d.id) === String(booking.assignedDriverId) ? 'selected' : '';
+            return `<option value="${d.id}" ${selected}>${escapeAdminHtml(d.name)} (${escapeAdminHtml(d.vehicleCategory || 'Any')})</option>`;
+        }))
+        .join('');
+
     const modal = createModal('Edit Booking Status', `
         <form id="editBookingForm">
             <div class="form-group">
@@ -244,6 +312,12 @@ function editBooking(index) {
                     <option value="Confirmed" ${booking.status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
                     <option value="Completed" ${booking.status === 'Completed' ? 'selected' : ''}>Completed</option>
                     <option value="Cancelled" ${booking.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Assign Driver</label>
+                <select id="bookingDriverId" class="form-select">
+                    ${driverOptions}
                 </select>
             </div>
             <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end;">
@@ -262,8 +336,27 @@ function editBooking(index) {
 function saveBookingStatus(index) {
     const bookings = getBookings();
     const status = document.getElementById('bookingStatus').value;
+    const selectedDriverId = document.getElementById('bookingDriverId')?.value || '';
+    const drivers = getDrivers();
+    const selectedDriver = selectedDriverId ? drivers.find(d => String(d.id) === String(selectedDriverId)) : null;
+
     bookings[index].status = status;
+    bookings[index].assignedDriverId = selectedDriver ? selectedDriver.id : null;
+    bookings[index].assignedDriverEmail = selectedDriver ? selectedDriver.email : null;
+    bookings[index].assignedDriverName = selectedDriver ? selectedDriver.name : null;
     saveBookings(bookings);
+
+    // Keep ride requests in sync for cab bookings
+    const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+    const requestIndex = rideRequests.findIndex(r => String(r.id) === String(bookings[index].id));
+    if (requestIndex !== -1) {
+        rideRequests[requestIndex].driverStatus = bookings[index].driverStatus || rideRequests[requestIndex].driverStatus || 'pending';
+        rideRequests[requestIndex].assignedDriverId = bookings[index].assignedDriverId;
+        rideRequests[requestIndex].assignedDriverEmail = bookings[index].assignedDriverEmail;
+        rideRequests[requestIndex].assignedDriverName = bookings[index].assignedDriverName;
+        localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
+    }
+
     loadBookings();
     loadDashboardData();
     closeModal();
@@ -341,6 +434,168 @@ function deleteUser(index) {
         loadUsers();
         loadDashboardData();
     }
+}
+
+// Drivers (applications & accounts)
+function loadDrivers() {
+    const driversTableBody = document.getElementById('driversTableBody');
+    if (!driversTableBody) return;
+
+    const drivers = getDrivers();
+    if (drivers.length === 0) {
+        driversTableBody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 2rem;">No drivers yet. Applications from the Join Us page appear here.</td></tr>';
+        return;
+    }
+
+    driversTableBody.innerHTML = drivers.map((d, index) => {
+        const st = d.status || 'active';
+        const badgeCls = driverStatusBadgeClass(st);
+        const reg = d.registeredDate ? new Date(d.registeredDate).toLocaleString() : '—';
+        const approveBtn = st === 'pending'
+            ? `<button class="btn-icon view" onclick="approveDriver(${index})" title="Approve"><i class="fas fa-check"></i></button>
+               <button class="btn-icon delete" onclick="rejectDriver(${index})" title="Reject"><i class="fas fa-times"></i></button>`
+            : '';
+        return `
+            <tr>
+                <td>#${escapeAdminHtml(d.id)}</td>
+                <td>${escapeAdminHtml(d.name)}</td>
+                <td>${escapeAdminHtml(d.email)}</td>
+                <td>${escapeAdminHtml(d.phone || '—')}</td>
+                <td>${escapeAdminHtml(d.licenseNumber || '—')}</td>
+                <td>${escapeAdminHtml(d.vehicleCategory || '—')}</td>
+                <td>${escapeAdminHtml(d.vehicleNumber || '—')}</td>
+                <td><span class="badge ${badgeCls}">${escapeAdminHtml(st)}</span></td>
+                <td>${escapeAdminHtml(reg)}</td>
+                <td>
+                    <div class="action-buttons">
+                        <button class="btn-icon view" onclick="viewDriver(${index})" title="View">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        ${approveBtn}
+                        <button class="btn-icon delete" onclick="deleteDriver(${index})" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function viewDriver(index) {
+    const drivers = getDrivers();
+    const d = drivers[index];
+    if (!d) return;
+
+    const st = d.status || 'active';
+    const modal = createModal('Driver / application', `
+        <div style="line-height: 1.8;">
+            <p><strong>ID:</strong> #${escapeAdminHtml(d.id)}</p>
+            <p><strong>Name:</strong> ${escapeAdminHtml(d.name)}</p>
+            <p><strong>Email:</strong> ${escapeAdminHtml(d.email)}</p>
+            <p><strong>Phone:</strong> ${escapeAdminHtml(d.phone || '—')}</p>
+            <p><strong>Licence:</strong> ${escapeAdminHtml(d.licenseNumber || '—')}</p>
+            <p><strong>Vehicle category:</strong> ${escapeAdminHtml(d.vehicleCategory || '—')}</p>
+            <p><strong>Vehicle registration:</strong> ${escapeAdminHtml(d.vehicleNumber || '—')}</p>
+            <p><strong>Status:</strong> <span class="badge ${driverStatusBadgeClass(st)}">${escapeAdminHtml(st)}</span></p>
+            <p><strong>Registered:</strong> ${d.registeredDate ? escapeAdminHtml(new Date(d.registeredDate).toLocaleString()) : '—'}</p>
+            <p><strong>Approved:</strong> ${d.approvedAt ? escapeAdminHtml(new Date(d.approvedAt).toLocaleString()) : '—'}</p>
+            <p><strong>Rejected:</strong> ${d.rejectedAt ? escapeAdminHtml(new Date(d.rejectedAt).toLocaleString()) : '—'}</p>
+        </div>
+    `);
+    document.body.appendChild(modal);
+}
+
+function approveDriver(index) {
+    const drivers = getDrivers();
+    if (!drivers[index]) return;
+    drivers[index].status = 'active';
+    drivers[index].approvedAt = new Date().toISOString();
+    saveDrivers(drivers);
+    loadDrivers();
+    loadDashboardData();
+}
+
+function rejectDriver(index) {
+    if (!confirm('Reject this driver application? They will not be able to sign in until re-added.')) return;
+    const drivers = getDrivers();
+    if (!drivers[index]) return;
+    drivers[index].status = 'rejected';
+    drivers[index].rejectedAt = new Date().toISOString();
+    saveDrivers(drivers);
+    loadDrivers();
+    loadDashboardData();
+}
+
+function deleteDriver(index) {
+    if (!confirm('Permanently delete this driver record?')) return;
+    const drivers = getDrivers();
+    drivers.splice(index, 1);
+    saveDrivers(drivers);
+    loadDrivers();
+    loadDashboardData();
+}
+
+// Payments (checkout / cart)
+function loadPayments() {
+    const tbody = document.getElementById('paymentsTableBody');
+    if (!tbody) return;
+
+    const payments = getPayments();
+    if (payments.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 2rem;">No payments yet. Successful checkouts on the payment page are listed here.</td></tr>';
+        return;
+    }
+
+    const rows = [...payments].sort((a, b) => new Date(b.paidAt || 0) - new Date(a.paidAt || 0));
+    tbody.innerHTML = rows.map(p => {
+        const paid = p.paidAt ? new Date(p.paidAt).toLocaleString() : '—';
+        const cust = `${escapeAdminHtml(p.firstName || '')} ${escapeAdminHtml(p.lastName || '')}`.trim() || '—';
+        return `
+            <tr>
+                <td>#${escapeAdminHtml(p.id)}</td>
+                <td>${paid}</td>
+                <td>${cust}</td>
+                <td>${escapeAdminHtml(p.email || '—')}</td>
+                <td>${escapeAdminHtml(p.phone || '—')}</td>
+                <td>₹${(parseFloat(p.amount) || 0).toLocaleString()}</td>
+                <td>${escapeAdminHtml(p.paymentMethod || '—')}</td>
+                <td><span class="badge badge-success">${escapeAdminHtml(p.status || 'completed')}</span></td>
+                <td>
+                    <button class="btn-icon view" onclick="viewPayment(${Number(p.id)})" title="View">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function viewPayment(paymentId) {
+    const payments = getPayments();
+    const p = payments.find(x => Number(x.id) === Number(paymentId));
+    if (!p) return;
+
+    const items = (p.items || []).map(it =>
+        `<li>${escapeAdminHtml(it.name)} × ${it.quantity} — ₹${(parseFloat(it.lineTotal) || 0).toLocaleString()}</li>`
+    ).join('');
+
+    const modal = createModal(`Payment #${escapeAdminHtml(p.id)}`, `
+        <div style="line-height: 1.8;">
+            <p><strong>Linked Booking:</strong> ${p.bookingId ? `#${escapeAdminHtml(p.bookingId)}` : '—'}</p>
+            <p><strong>Paid at:</strong> ${p.paidAt ? escapeAdminHtml(new Date(p.paidAt).toLocaleString()) : '—'}</p>
+            <p><strong>Customer:</strong> ${escapeAdminHtml(p.firstName)} ${escapeAdminHtml(p.lastName)}</p>
+            <p><strong>Email:</strong> ${escapeAdminHtml(p.email)}</p>
+            <p><strong>Phone:</strong> ${escapeAdminHtml(p.phone)}</p>
+            <p><strong>Address:</strong> ${escapeAdminHtml(p.address || '—')}, ${escapeAdminHtml(p.city || '')} ${escapeAdminHtml(p.pincode || '')}</p>
+            <p><strong>Amount:</strong> ₹${(parseFloat(p.amount) || 0).toLocaleString()}</p>
+            <p><strong>Method:</strong> ${escapeAdminHtml(p.paymentMethod)}</p>
+            <p><strong>Status:</strong> ${escapeAdminHtml(p.status)}</p>
+            <p><strong>Items:</strong></p>
+            <ul style="margin-left: 1.25rem;">${items || '<li>—</li>'}</ul>
+        </div>
+    `);
+    document.body.appendChild(modal);
 }
 
 // Destinations Management
@@ -593,4 +848,11 @@ window.loadAnalytics = loadAnalytics;
 window.loadSettings = loadSettings;
 window.saveSettings = saveSettings;
 window.closeModal = closeModal;
+window.loadDrivers = loadDrivers;
+window.loadPayments = loadPayments;
+window.viewDriver = viewDriver;
+window.approveDriver = approveDriver;
+window.rejectDriver = rejectDriver;
+window.deleteDriver = deleteDriver;
+window.viewPayment = viewPayment;
 

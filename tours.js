@@ -393,7 +393,7 @@ function createTourCard(tour) {
                 <button onclick="showTourDetails(${tour.id})" class="btn btn-secondary" style="flex: 1;">
                     <i class="fas fa-info-circle"></i> View Details
                 </button>
-                <a href="booking.html?tour=${tour.id}" class="btn btn-primary" style="flex: 1; text-align: center;">
+                <a href="booking.html?tour=${tour.id}&destination=${encodeURIComponent(tour.destinations?.[0] || '')}&tourType=${encodeURIComponent(tour.type)}&tourDays=${encodeURIComponent(tour.days)}&tourNights=${encodeURIComponent(tour.nights)}" class="btn btn-primary" style="flex: 1; text-align: center;">
                     <i class="fas fa-book"></i> Book Now
                 </a>
             </div>
@@ -659,7 +659,7 @@ function showTourDetails(tourId) {
                     ` : ''}
                 </div>
                 <div class="tour-details-footer">
-                    <a href="booking.html?tour=${tour.id}" class="btn btn-primary btn-large">
+                    <a href="booking.html?tour=${tour.id}&destination=${encodeURIComponent(tour.destinations?.[0] || '')}&tourType=${encodeURIComponent(tour.type)}&tourDays=${encodeURIComponent(tour.days)}&tourNights=${encodeURIComponent(tour.nights)}" class="btn btn-primary btn-large">
                         <i class="fas fa-book"></i> Book This Tour
                     </a>
                 </div>

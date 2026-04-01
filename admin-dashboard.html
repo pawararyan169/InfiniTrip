@@ -677,25 +677,31 @@
             </div>
             
             <div class="nav-tabs">
-                <button class="nav-tab active" onclick="showSection('dashboard')">
+                <button type="button" class="nav-tab active" onclick="showSection('dashboard', this)">
                     <i class="fas fa-chart-line"></i> Dashboard
                 </button>
-                <button class="nav-tab" onclick="showSection('bookings')">
+                <button type="button" class="nav-tab" onclick="showSection('bookings', this)">
                     <i class="fas fa-calendar-check"></i> Bookings
                 </button>
-                <button class="nav-tab" onclick="showSection('users')">
+                <button type="button" class="nav-tab" onclick="showSection('users', this)">
                     <i class="fas fa-users"></i> Users
                 </button>
-                <button class="nav-tab" onclick="showSection('destinations')">
+                <button type="button" class="nav-tab" onclick="showSection('payments', this)">
+                    <i class="fas fa-money-bill-wave"></i> Payments
+                </button>
+                <button type="button" class="nav-tab" onclick="showSection('drivers', this)">
+                    <i class="fas fa-id-card"></i> Drivers
+                </button>
+                <button type="button" class="nav-tab" onclick="showSection('destinations', this)">
                     <i class="fas fa-map"></i> Destinations
                 </button>
-                <button class="nav-tab" onclick="showSection('tours')">
+                <button type="button" class="nav-tab" onclick="showSection('tours', this)">
                     <i class="fas fa-route"></i> Tours
                 </button>
-                <button class="nav-tab" onclick="showSection('analytics')">
+                <button type="button" class="nav-tab" onclick="showSection('analytics', this)">
                     <i class="fas fa-chart-bar"></i> Analytics
                 </button>
-                <button class="nav-tab" onclick="showSection('settings')">
+                <button type="button" class="nav-tab" onclick="showSection('settings', this)">
                     <i class="fas fa-cog"></i> Settings
                 </button>
             </div>
@@ -770,6 +776,32 @@
                         </div>
                         <div class="stat-icon purple">
                             <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value" id="totalDrivers">0</div>
+                            <div class="stat-label">Driver records</div>
+                            <div class="stat-change">Includes pending applications</div>
+                        </div>
+                        <div class="stat-icon purple" style="background: rgba(139, 92, 246, 0.1); color: #7c3aed;">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value" id="totalPayments">0</div>
+                            <div class="stat-label">Checkout payments</div>
+                            <div class="stat-change" id="totalPaymentVolume">₹0</div>
+                        </div>
+                        <div class="stat-icon green">
+                            <i class="fas fa-receipt"></i>
                         </div>
                     </div>
                 </div>
@@ -864,6 +896,69 @@
                         <tbody id="usersTableBody">
                             <!-- Populated by JavaScript -->
                         </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payments Section -->
+        <section id="payments" class="admin-section section-hidden">
+            <div class="page-header">
+                <h1>Payments</h1>
+                <p>Checkout transactions from the payment page (cart)</p>
+            </div>
+            <div class="content-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-money-bill-wave"></i> All payments</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Date</th>
+                                <th>Customer</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Drivers Section -->
+        <section id="drivers" class="admin-section section-hidden">
+            <div class="page-header">
+                <h1>Drivers</h1>
+                <p>Applications from the homepage “Join Us” link and driver accounts</p>
+            </div>
+            <div class="content-card">
+                <div class="card-header">
+                    <h2><i class="fas fa-id-card"></i> Drivers &amp; applications</h2>
+                </div>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Licence</th>
+                                <th>Vehicle cat.</th>
+                                <th>Reg. no.</th>
+                                <th>Status</th>
+                                <th>Registered</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="driversTableBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -1049,6 +1144,8 @@
             loadDashboardData();
             loadBookings();
             loadUsers();
+            loadPayments();
+            loadDrivers();
             loadDestinations();
             loadTours();
             loadAnalytics();
@@ -1065,26 +1162,31 @@
             }
         });
         
-        // Navigation function
-        function showSection(sectionId) {
-            // Hide all sections
+        // Navigation function (pass `this` from nav buttons so clicks on icons still work)
+        function showSection(sectionId, tabEl) {
             document.querySelectorAll('.admin-section').forEach(section => {
                 section.classList.remove('section-active');
                 section.classList.add('section-hidden');
             });
-            
-            // Show selected section
+
             const section = document.getElementById(sectionId);
             if (section) {
                 section.classList.remove('section-hidden');
                 section.classList.add('section-active');
             }
-            
-            // Update active tab
-            document.querySelectorAll('.nav-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
+
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+            const btn = tabEl && tabEl.closest ? tabEl.closest('.nav-tab') : tabEl;
+            if (btn) btn.classList.add('active');
+
+            if (sectionId === 'bookings') loadBookings();
+            if (sectionId === 'users') loadUsers();
+            if (sectionId === 'payments') loadPayments();
+            if (sectionId === 'drivers') loadDrivers();
+            if (sectionId === 'destinations') loadDestinations();
+            if (sectionId === 'tours') loadTours();
+            if (sectionId === 'analytics') loadAnalytics();
+            if (sectionId === 'dashboard') loadDashboardData();
         }
         
         // Make functions globally available

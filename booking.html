@@ -585,6 +585,31 @@
                 setTimeout(updateItinerary, 500);
             }
         });
+
+        // Show success modal if booking was OTP-confirmed on otp.html
+        (function showOtpConfirmedBooking() {
+            const params = new URLSearchParams(window.location.search);
+            const bookingConfirmedId = params.get('bookingConfirmed');
+            if (!bookingConfirmedId) return;
+
+            const modal = document.getElementById('successModal');
+            const bookingRefEl = document.getElementById('bookingReference');
+            if (!modal || !bookingRefEl) return;
+
+            const heading = modal.querySelector('h2');
+            const paragraphs = modal.querySelectorAll('.modal-body p');
+
+            if (heading) heading.textContent = 'Booking Confirmed!';
+            if (bookingRefEl) bookingRefEl.textContent = bookingConfirmedId;
+
+            // paragraphs[0] = "Thank you..." ; paragraphs[2] = "Our team..."
+            if (paragraphs && paragraphs.length >= 3) {
+                paragraphs[0].textContent = 'OTP verified! Your booking is confirmed.';
+                paragraphs[2].textContent = 'We will contact you shortly to share final details.';
+            }
+
+            modal.style.display = 'block';
+        })();
     </script>
 </body>
 </html>

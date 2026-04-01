@@ -455,6 +455,19 @@
                 </div>
             </div>
 
+            <div class="rides-section" style="margin-bottom: 2rem;">
+                <h2 class="section-title">
+                    <i class="fas fa-bell"></i> Notifications
+                </h2>
+                <div id="notificationsContainer">
+                    <div class="no-rides">
+                        <i class="fas fa-bell-slash"></i>
+                        <h3>No Notifications</h3>
+                        <p>You do not have any notifications yet.</p>
+                    </div>
+                </div>
+            </div>
+
             <!-- Rides Section -->
             <div class="rides-section">
                 <h2 class="section-title">
@@ -518,9 +531,58 @@
             }
         }
 
+        function getVisibleRideRequestsForDriver() {
+            const session = checkDriverLogin();
+            if (!session) return [];
+            const all = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+            return all.filter(r => {
+                const assignedToSessionId = r.assignedDriverId != null && String(r.assignedDriverId) === String(session.id);
+                const assignedToSessionEmail = r.assignedDriverEmail && session.email && String(r.assignedDriverEmail).toLowerCase() === String(session.email).toLowerCase();
+                return assignedToSessionId || assignedToSessionEmail;
+            });
+        }
+
+        function loadDriverNotifications() {
+            const session = checkDriverLogin();
+            const container = document.getElementById('notificationsContainer');
+            if (!session || !container) return;
+
+            const notifications = JSON.parse(localStorage.getItem('driverNotifications') || '[]');
+            const visible = notifications
+                .filter(n => {
+                    const byId = n.assignedDriverId != null && String(n.assignedDriverId) === String(session.id);
+                    const byEmail = n.assignedDriverEmail && session.email && String(n.assignedDriverEmail).toLowerCase() === String(session.email).toLowerCase();
+                    return byId || byEmail;
+                })
+                .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0))
+                .slice(0, 8);
+
+            if (!visible.length) {
+                container.innerHTML = `
+                    <div class="no-rides">
+                        <i class="fas fa-bell-slash"></i>
+                        <h3>No Notifications</h3>
+                        <p>You do not have any notifications yet.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = visible.map(n => `
+                <div class="ride-card" style="margin-bottom:1rem;">
+                    <div class="ride-header">
+                        <div class="ride-id">${n.subject || 'Driver notification'}</div>
+                        <span class="ride-status ${n.read ? 'accepted' : 'pending'}">${n.read ? 'read' : 'new'}</span>
+                    </div>
+                    <p style="margin-bottom:0.5rem;color:var(--text);">${(n.body || '').split('\n').slice(0, 3).join(' | ')}</p>
+                    <small style="color:var(--text);">${new Date(n.timestamp || Date.now()).toLocaleString()}</small>
+                </div>
+            `).join('');
+        }
+
         // Load ride requests
         function loadRideRequests() {
-            const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+            const rideRequests = getVisibleRideRequestsForDriver();
             const ridesContainer = document.getElementById('ridesContainer');
             
             if (rideRequests.length === 0) {
@@ -539,12 +601,12 @@
             rideRequests.sort((a, b) => new Date(b.createdAt || b.bookingDate) - new Date(a.createdAt || a.bookingDate));
 
             let html = '';
-            rideRequests.forEach((ride, index) => {
+            rideRequests.forEach((ride) => {
                 const status = ride.driverStatus || 'pending';
                 const requestId = ride.requestId || ride.id;
                 
                 html += `
-                    <div class="ride-card ${status}" data-index="${index}">
+                    <div class="ride-card ${status}" data-index="${requestId}">
                         <div class="ride-header">
                             <div>
                                 <div class="ride-id">Request ID: ${requestId}</div>
@@ -612,10 +674,10 @@
                         ` : ''}
                         ${status === 'pending' ? `
                             <div class="ride-actions">
-                                <button class="btn-accept" onclick="acceptRide(${index})">
+                                <button class="btn-accept" onclick="acceptRide('${requestId}')">
                                     <i class="fas fa-check"></i> Accept Ride
                                 </button>
-                                <button class="btn-decline" onclick="declineRide(${index})">
+                                <button class="btn-decline" onclick="declineRide('${requestId}')">
                                     <i class="fas fa-times"></i> Decline Ride
                                 </button>
                             </div>
@@ -634,7 +696,7 @@
 
         // Update statistics
         function updateStats() {
-            const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+            const rideRequests = getVisibleRideRequestsForDriver();
             const pending = rideRequests.filter(r => (r.driverStatus || 'pending') === 'pending').length;
             const accepted = rideRequests.filter(r => (r.driverStatus || '') === 'accepted').length;
             const declined = rideRequests.filter(r => (r.driverStatus || '') === 'declined').length;
@@ -645,16 +707,17 @@
         }
 
         // Accept ride
-        function acceptRide(index) {
+        function acceptRide(requestId) {
             const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
-            if (rideRequests[index]) {
-                rideRequests[index].driverStatus = 'accepted';
-                rideRequests[index].acceptedAt = new Date().toISOString();
+            const rideIndex = rideRequests.findIndex(r => String(r.requestId || r.id) === String(requestId));
+            if (rideIndex !== -1) {
+                rideRequests[rideIndex].driverStatus = 'accepted';
+                rideRequests[rideIndex].acceptedAt = new Date().toISOString();
                 localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
 
                 // Also update in bookings if exists
                 const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-                const booking = bookings.find(b => b.id === rideRequests[index].id);
+                const booking = bookings.find(b => b.id === rideRequests[rideIndex].id);
                 if (booking) {
                     booking.driverStatus = 'accepted';
                     localStorage.setItem('bookings', JSON.stringify(bookings));
@@ -666,20 +729,21 @@
         }
 
         // Decline ride
-        function declineRide(index) {
+        function declineRide(requestId) {
             if (!confirm('Are you sure you want to decline this ride?')) {
                 return;
             }
 
             const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
-            if (rideRequests[index]) {
-                rideRequests[index].driverStatus = 'declined';
-                rideRequests[index].declinedAt = new Date().toISOString();
+            const rideIndex = rideRequests.findIndex(r => String(r.requestId || r.id) === String(requestId));
+            if (rideIndex !== -1) {
+                rideRequests[rideIndex].driverStatus = 'declined';
+                rideRequests[rideIndex].declinedAt = new Date().toISOString();
                 localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
 
                 // Also update in bookings if exists
                 const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-                const booking = bookings.find(b => b.id === rideRequests[index].id);
+                const booking = bookings.find(b => b.id === rideRequests[rideIndex].id);
                 if (booking) {
                     booking.driverStatus = 'declined';
                     localStorage.setItem('bookings', JSON.stringify(bookings));
@@ -711,10 +775,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             loadDriverInfo();
             loadRideRequests();
+            loadDriverNotifications();
             updateDriverNavigation();
             
             // Refresh every 30 seconds
-            setInterval(loadRideRequests, 30000);
+            setInterval(() => {
+                loadRideRequests();
+                loadDriverNotifications();
+            }, 30000);
         });
     </script>
     <script src="script.js"></script>

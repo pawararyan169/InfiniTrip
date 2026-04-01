@@ -370,7 +370,17 @@
             const driver = drivers.find(d => d.email.toLowerCase() === emailLower && d.password === password);
             
             if (driver) {
-                // Driver credentials matched
+                if (driver.status === 'pending') {
+                    errorDiv.textContent = 'Your driver application is pending admin approval. You will be able to sign in after approval.';
+                    errorDiv.classList.add('show');
+                    return;
+                }
+                if (driver.status === 'rejected') {
+                    errorDiv.textContent = 'Your driver application was not approved. Please contact support if you have questions.';
+                    errorDiv.classList.add('show');
+                    return;
+                }
+                // Driver credentials matched (active or legacy without status)
                 localStorage.setItem('driverSession', JSON.stringify({
                     id: driver.id,
                     name: driver.name,
@@ -393,6 +403,12 @@
             
             if (user) {
                 // Customer credentials matched
+                if (user.verified === false) {
+                    // User exists but is not OTP-verified yet
+                    window.location.href = `otp.html?purpose=signup&userId=${encodeURIComponent(user.id)}&reason=login`;
+                    return;
+                }
+
                 const userData = {
                     id: user.id || Date.now().toString(),
                     email: user.email,

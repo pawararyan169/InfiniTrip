@@ -155,6 +155,83 @@ if (destinationSelect && destinationParam) {
     calculatePrice();
 }
 
+// Pre-fill from tour/custom package links
+const tourTypeMap = {
+    basic: 'basic',
+    premium: 'premium',
+    luxury: 'luxury'
+};
+
+function prefillBookingFromQuery() {
+    const bookingTypeField = document.getElementById('bookingType');
+    const packageTypeField = document.getElementById('packageType');
+    const adultsField = document.getElementById('adults');
+    const childrenField = document.getElementById('children');
+    const specialRequirementsField = document.getElementById('specialRequirements');
+
+    const tourId = urlParams.get('tour');
+    const tourType = urlParams.get('tourType');
+    const tourDays = urlParams.get('tourDays');
+    const tourNights = urlParams.get('tourNights');
+    const custom = urlParams.get('custom') === 'true';
+
+    if (tourId || custom) {
+        if (bookingTypeField) bookingTypeField.value = 'tour';
+        if (typeof toggleBookingType === 'function') toggleBookingType();
+    }
+
+    if (destinationSelect && urlParams.get('destination')) {
+        destinationSelect.value = urlParams.get('destination');
+    }
+    if (packageTypeField && tourType && tourTypeMap[tourType]) {
+        packageTypeField.value = tourTypeMap[tourType];
+    }
+    if (adultsField && urlParams.get('tourAdults')) {
+        adultsField.value = Math.max(1, parseInt(urlParams.get('tourAdults'), 10) || 1);
+    }
+    if (childrenField && urlParams.get('tourChildren')) {
+        childrenField.value = Math.max(0, parseInt(urlParams.get('tourChildren'), 10) || 0);
+    }
+
+    if (custom) {
+        try {
+            const customPackage = JSON.parse(localStorage.getItem('customPackage') || '{}');
+            if (customPackage.selectedDestinations?.length) {
+                if (destinationSelect) destinationSelect.value = customPackage.selectedDestinations[0];
+                if (specialRequirementsField) {
+                    const note = `Custom package destinations: ${customPackage.selectedDestinations.join(', ')}`;
+                    specialRequirementsField.value = specialRequirementsField.value
+                        ? `${specialRequirementsField.value}\n${note}`
+                        : note;
+                }
+            }
+            if (packageTypeField && customPackage.packageType) {
+                packageTypeField.value = customPackage.packageType;
+            }
+            if (adultsField && customPackage.adults) adultsField.value = Math.max(1, parseInt(customPackage.adults, 10) || 1);
+            if (childrenField && customPackage.children != null) childrenField.value = Math.max(0, parseInt(customPackage.children, 10) || 0);
+        } catch (e) {
+            console.warn('Could not parse custom package data');
+        }
+    }
+
+    if ((tourId || custom) && specialRequirementsField) {
+        const extra = [];
+        if (tourId) extra.push(`Tour ID: ${tourId}`);
+        if (tourDays) extra.push(`Duration: ${tourDays} days`);
+        if (tourNights) extra.push(`Nights: ${tourNights}`);
+        if (extra.length) {
+            specialRequirementsField.value = specialRequirementsField.value
+                ? `${specialRequirementsField.value}\n${extra.join(' | ')}`
+                : extra.join(' | ');
+        }
+    }
+
+    calculatePrice();
+}
+
+prefillBookingFromQuery();
+
 // Toggle Booking Type (Tour Package vs Cab Booking)
 function toggleBookingType() {
     const bookingType = document.getElementById('bookingType')?.value;
@@ -264,16 +341,34 @@ if (bookingForm) {
         
         // Save to ride requests for drivers (if cab booking)
         if (bookingData.bookingType === 'cab') {
+            const drivers = JSON.parse(localStorage.getItem('drivers') || '[]');
+            const eligibleDrivers = drivers.filter(d =>
+                (d.status || 'active') === 'active' &&
+                (!booking.vehicleCategory || !d.vehicleCategory || d.vehicleCategory === booking.vehicleCategory)
+            );
+            const assignedDriver = eligibleDrivers.length > 0 ? eligibleDrivers[0] : null;
+
             const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
-            rideRequests.push({
+            const rideRequest = {
                 ...booking,
                 requestId: 'RIDE' + Date.now().toString().slice(-8),
-                createdAt: new Date().toISOString()
-            });
+                createdAt: new Date().toISOString(),
+                assignedDriverId: assignedDriver ? assignedDriver.id : null,
+                assignedDriverEmail: assignedDriver ? assignedDriver.email : null,
+                assignedDriverName: assignedDriver ? assignedDriver.name : null
+            };
+            rideRequests.push(rideRequest);
             localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
-            
-            // Send driver notification (email)
-            sendDriverNotification(booking);
+
+            booking.assignedDriverId = rideRequest.assignedDriverId;
+            booking.assignedDriverEmail = rideRequest.assignedDriverEmail;
+            booking.assignedDriverName = rideRequest.assignedDriverName;
+            booking.requestId = rideRequest.requestId;
+            bookings[bookings.length - 1] = booking;
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+
+            // Send driver notification
+            sendDriverNotification(rideRequest, assignedDriver);
         }
         
         // Also store as last booking for reference
@@ -283,28 +378,31 @@ if (bookingForm) {
             timestamp: new Date().toISOString()
         }));
 
-        // Show success modal
-        const modal = document.getElementById('successModal');
-        const bookingRefEl = document.getElementById('bookingReference');
-        
-        if (bookingRefEl) {
-            bookingRefEl.textContent = bookingReference;
+        // Generate OTP for booking confirmation and redirect
+        const otpCode = String(Math.floor(100000 + Math.random() * 900000)).padStart(6, '0');
+        const now = Date.now();
+        localStorage.setItem(`otp_booking_${bookingReference}`, JSON.stringify({
+            code: otpCode,
+            contact: { email: booking.email, phone: booking.phone },
+            createdAt: new Date(now).toISOString(),
+            expiresAt: now + 5 * 60 * 1000, // 5 minutes
+            resendCooldownUntil: now + 30 * 1000, // 30 seconds
+            verifiedAt: null,
+            attempts: 0
+        }));
+
+        // Reset form then go to OTP verification
+        this.reset();
+        if (typeof calculatePrice === 'function') {
+            calculatePrice();
         }
-        
-        if (modal) {
-            modal.style.display = 'block';
-            // Reset form
-            this.reset();
-            if (typeof calculatePrice === 'function') {
-                calculatePrice();
-            }
-        }
+
+        window.location.href = `otp.html?purpose=booking&bookingId=${encodeURIComponent(bookingReference)}`;
     });
 }
 
 // Send Driver Notification (Email)
-function sendDriverNotification(booking) {
-    // Get driver email from localStorage or use default
+function sendDriverNotification(booking, assignedDriver) {
     const drivers = JSON.parse(localStorage.getItem('drivers') || '[]');
     
     // Email details for driver
@@ -346,6 +444,8 @@ ${window.location.origin}/driver-dashboard.html
         id: Date.now(),
         bookingId: booking.id,
         requestId: booking.requestId || booking.id,
+        assignedDriverId: assignedDriver ? assignedDriver.id : null,
+        assignedDriverEmail: assignedDriver ? assignedDriver.email : null,
         subject: emailSubject,
         body: emailBody,
         timestamp: new Date().toISOString(),
@@ -532,13 +632,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (modal) {
 
-            modal.style.display = 'block';
+            // Generate OTP for booking confirmation and redirect
+            const otpCode = String(Math.floor(100000 + Math.random() * 900000)).padStart(6, '0');
+            const now = Date.now();
+            localStorage.setItem(`otp_booking_${bookingReference}`, JSON.stringify({
+                code: otpCode,
+                contact: { email: booking.email, phone: booking.phone },
+                createdAt: new Date(now).toISOString(),
+                expiresAt: now + 5 * 60 * 1000, // 5 minutes
+                resendCooldownUntil: now + 30 * 1000, // 30 seconds
+                verifiedAt: null,
+                attempts: 0
+            }));
 
-            // Reset form
-
+            // Reset form then go to OTP verification
             this.reset();
-
             calculatePrice();
+            window.location.href = `otp.html?purpose=booking&bookingId=${encodeURIComponent(bookingReference)}`;
 
         }
 

@@ -435,6 +435,45 @@
 
     <script src="script.js"></script>
     <script src="auth.js"></script>
+    <script src="cart.js"></script>
+    <script>
+        function attachVehicleCartButtons() {
+            if (typeof addToCart !== 'function') return;
+            document.querySelectorAll('.vehicle-card').forEach((card, idx) => {
+                if (card.querySelector('.add-vehicle-cart-btn')) return;
+                const title = card.querySelector('.vehicle-details h3')?.textContent?.trim();
+                const priceText = card.querySelector('.vehicle-price')?.textContent || '';
+                if (!title) return;
+
+                const perKmPrice = parseInt((priceText.match(/\d[\d,]*/) || ['0'])[0].replace(/,/g, ''), 10) || 0;
+                const image = card.querySelector('.vehicle-image img')?.src || '';
+                const vehicleId = `vehicle-${idx + 1}-${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn btn-secondary add-vehicle-cart-btn';
+                btn.style.marginTop = '1rem';
+                btn.style.width = '100%';
+                btn.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
+                btn.addEventListener('click', () => {
+                    addToCart({
+                        id: vehicleId,
+                        type: 'vehicle',
+                        name: title,
+                        price: perKmPrice,
+                        quantity: 1,
+                        image
+                    });
+                    alert('Vehicle added to cart.');
+                });
+
+                card.querySelector('.vehicle-details')?.appendChild(btn);
+            });
+            updateCartCount();
+        }
+
+        document.addEventListener('DOMContentLoaded', attachVehicleCartButtons);
+    </script>
 </body>
 </html>
 

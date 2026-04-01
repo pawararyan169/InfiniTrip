@@ -113,6 +113,26 @@ function hideFieldError(fieldId) {
     }
 }
 
+// OTP helpers (localStorage demo)
+function otpGenerateCode() {
+    return String(Math.floor(100000 + Math.random() * 900000)).padStart(6, '0');
+}
+
+function otpStoreOtp({ purpose, targetId, contact }) {
+    const code = otpGenerateCode();
+    const now = Date.now();
+    const otpKey = `otp_${purpose}_${targetId}`;
+    localStorage.setItem(otpKey, JSON.stringify({
+        code,
+        contact,
+        createdAt: new Date(now).toISOString(),
+        expiresAt: now + 5 * 60 * 1000, // 5 minutes
+        resendCooldownUntil: now + 30 * 1000, // 30 seconds
+        verifiedAt: null,
+        attempts: 0
+    }));
+}
+
 // Sign Up Functionality
 const signupForm = document.getElementById('signupForm');
 if (signupForm) {
@@ -325,30 +345,27 @@ if (signupForm) {
             email: email,
             phone: phone,
             password: password, // In production, this should be hashed
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            registeredDate: new Date().toISOString(),
+            verified: false,
+            verifiedAt: null
         };
         
         // Add user to storage
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
         
-        // Auto login after signup
-        localStorage.setItem('currentUser', JSON.stringify({
-            id: newUser.id,
-            firstName: newUser.firstName,
-            lastName: newUser.lastName,
-            email: newUser.email,
-            phone: newUser.phone
-        }));
-        localStorage.setItem('userRole', 'user');
-        
-        // Show success message
-        showSuccess('Account created successfully! Redirecting...');
-        
-        // Redirect to home page after 1.5 seconds
+        // Generate OTP and redirect to OTP verification
+        otpStoreOtp({
+            purpose: 'signup',
+            targetId: newUser.id,
+            contact: { email: newUser.email, phone: newUser.phone }
+        });
+
+        showSuccess('Account created. OTP sent for verification. Redirecting...');
         setTimeout(() => {
-            window.location.href = 'index.html';
-        }, 1500);
+            window.location.href = `otp.html?purpose=signup&userId=${encodeURIComponent(newUser.id)}`;
+        }, 900);
     });
 }
 

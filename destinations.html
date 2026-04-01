@@ -1110,6 +1110,7 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="cart.js"></script>
     <script src="itinerary.js"></script>
     <script src="auth.js"></script>
     <script src="infini-ai.js"></script>
@@ -1127,6 +1128,43 @@
                 icon.style.transform = 'rotate(0deg)';
             }
         }
+
+        function attachDestinationCartButtons() {
+            if (typeof addToCart !== 'function') return;
+            document.querySelectorAll('.destination-detail-card').forEach((card) => {
+                const heading = card.querySelector('h2');
+                const priceText = card.querySelector('.destination-meta span:last-child')?.textContent || '';
+                const bookingLink = card.querySelector('a[href*="booking.html?destination="]');
+                if (!heading || !bookingLink) return;
+                if (card.querySelector('.add-to-cart-btn')) return;
+
+                const url = new URL(bookingLink.href, window.location.origin);
+                const destinationId = url.searchParams.get('destination') || heading.textContent.trim().toLowerCase().replace(/\s+/g, '-');
+                const priceNumber = parseInt((priceText.match(/\d[\d,]*/) || ['2500'])[0].replace(/,/g, ''), 10);
+                const image = card.querySelector('.destination-detail-image img')?.src || '';
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn btn-secondary add-to-cart-btn';
+                btn.style.marginLeft = '0.75rem';
+                btn.innerHTML = '<i class="fas fa-cart-plus"></i> Add to Cart';
+                btn.addEventListener('click', () => {
+                    addToCart({
+                        id: destinationId,
+                        type: 'destination',
+                        name: heading.textContent.trim(),
+                        price: priceNumber,
+                        quantity: 1,
+                        image
+                    });
+                    alert('Destination added to cart.');
+                });
+                bookingLink.insertAdjacentElement('afterend', btn);
+            });
+            updateCartCount();
+        }
+
+        document.addEventListener('DOMContentLoaded', attachDestinationCartButtons);
     </script>
 </body>
 </html>
