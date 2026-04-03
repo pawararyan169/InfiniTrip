@@ -1,5 +1,40 @@
 // Admin Panel Management System
 
+var adminBookingsCache = null;
+var adminUsersCache = null;
+var adminDriversCache = null;
+var adminPaymentsCache = null;
+var adminSettingsCache = null;
+var adminDestinationsCache = null;
+var adminToursCache = null;
+
+function adminUseApi() {
+    return typeof InfiniTripApi !== 'undefined';
+}
+
+async function adminBootstrap() {
+    if (!adminUseApi()) return;
+    try {
+        var b = await InfiniTripApi.request('admin/bookings', { method: 'GET' });
+        if (b.ok) adminBookingsCache = b.bookings;
+        var u = await InfiniTripApi.request('admin/users', { method: 'GET' });
+        if (u.ok) adminUsersCache = u.users;
+        var d = await InfiniTripApi.request('admin/drivers', { method: 'GET' });
+        if (d.ok) adminDriversCache = d.drivers;
+        var p = await InfiniTripApi.request('admin/payments', { method: 'GET' });
+        if (p.ok) adminPaymentsCache = p.payments;
+        var s = await InfiniTripApi.request('admin/settings', { method: 'GET' });
+        if (s.ok) adminSettingsCache = s.settings;
+        var dest = await InfiniTripApi.request('admin/destinations', { method: 'GET' });
+        if (dest.ok) adminDestinationsCache = dest.destinations;
+        var t = await InfiniTripApi.request('admin/tours', { method: 'GET' });
+        if (t.ok) adminToursCache = t.tours;
+    } catch (e) {
+        /* offline */
+    }
+}
+window.adminBootstrap = adminBootstrap;
+
 // Admin Authentication
 const ADMIN_CREDENTIALS = {
     username: 'admin',
@@ -36,16 +71,25 @@ function adminLogin(username, password) {
     return false;
 }
 
-// Admin logout
 function adminLogout() {
+    if (adminUseApi()) {
+        InfiniTripApi.request('auth/logout', { method: 'POST', body: {} }).finally(function () {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('adminUsername');
+            localStorage.removeItem('userRole');
+            window.location.href = 'signin.html';
+        });
+        return;
+    }
     localStorage.removeItem('adminLoggedIn');
     localStorage.removeItem('adminUsername');
     localStorage.removeItem('userRole');
     window.location.href = 'signin.html';
 }
 
-// Get bookings from localStorage
+// Get bookings (API cache when admin dashboard loaded with InfiniTripApi)
 function getBookings() {
+    if (adminBookingsCache !== null) return adminBookingsCache;
     const bookings = localStorage.getItem('bookings');
     return bookings ? JSON.parse(bookings) : [];
 }
@@ -55,13 +99,14 @@ function saveBookings(bookings) {
     localStorage.setItem('bookings', JSON.stringify(bookings));
 }
 
-// Get users from localStorage
 function getUsers() {
+    if (adminUsersCache !== null) return adminUsersCache;
     const users = localStorage.getItem('users');
     return users ? JSON.parse(users) : [];
 }
 
 function getDrivers() {
+    if (adminDriversCache !== null) return adminDriversCache;
     try {
         const raw = localStorage.getItem('drivers');
         return raw ? JSON.parse(raw) : [];
@@ -75,6 +120,7 @@ function saveDrivers(drivers) {
 }
 
 function getPayments() {
+    if (adminPaymentsCache !== null) return adminPaymentsCache;
     try {
         const raw = localStorage.getItem('payments');
         return raw ? JSON.parse(raw) : [];
@@ -131,23 +177,39 @@ function getDestinations() {
         'vande-mataram-memorial': { name: 'Vande Mataram Memorial', price: 1000 }
     };
     
+    if (adminDestinationsCache !== null && typeof adminDestinationsCache === 'object') {
+        const customKeys = Object.keys(adminDestinationsCache);
+        if (customKeys.length) {
+            return Object.assign({}, defaultDestinations, adminDestinationsCache);
+        }
+    }
     const stored = localStorage.getItem('adminDestinations');
-    return stored ? JSON.parse(stored) : defaultDestinations;
+    return stored ? Object.assign({}, defaultDestinations, JSON.parse(stored)) : defaultDestinations;
 }
 
-// Save destinations
 function saveDestinations(destinations) {
+    if (adminUseApi()) {
+        InfiniTripApi.request('admin/destinations', { method: 'POST', body: { destinations: destinations } }).then(function (r) {
+            if (r.ok) adminDestinationsCache = destinations;
+        });
+        return;
+    }
     localStorage.setItem('adminDestinations', JSON.stringify(destinations));
 }
 
-// Get tours data
 function getTours() {
+    if (adminToursCache !== null) return adminToursCache;
     const tours = localStorage.getItem('adminTours');
     return tours ? JSON.parse(tours) : [];
 }
 
-// Save tours
 function saveTours(tours) {
+    if (adminUseApi()) {
+        InfiniTripApi.request('admin/tours', { method: 'POST', body: { tours: tours } }).then(function (r) {
+            if (r.ok) adminToursCache = tours;
+        });
+        return;
+    }
     localStorage.setItem('adminTours', JSON.stringify(tours));
 }
 
@@ -218,32 +280,36 @@ function loadBookings() {
         return;
     }
     
-    bookingsTableBody.innerHTML = bookings.map((booking, index) => `
+    bookingsTableBody.innerHTML = bookings.map((booking) => {
+        const bid = booking.id != null ? String(booking.id) : '';
+        const bidJs = JSON.stringify(bid);
+        return `
         <tr>
-            <td>#${booking.id || index + 1}</td>
+            <td>#${booking.id || '—'}</td>
             <td>${booking.name || 'N/A'}</td>
             <td>${booking.email || 'N/A'}</td>
             <td>${booking.phone || 'N/A'}</td>
             <td>${booking.destination || 'N/A'}</td>
             <td>${booking.packageType || 'N/A'}</td>
-            <td>${booking.travelDate || 'N/A'}</td>
+            <td>${booking.travelDate || booking.pickupDate || 'N/A'}</td>
             <td>₹${(parseFloat(booking.totalPrice) || 0).toLocaleString()}</td>
             <td><span class="badge ${getStatusBadgeClass(booking.status)}">${booking.status || 'Pending'}</span></td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn-icon view" onclick="viewBooking(${index})" title="View">
+                    <button class="btn-icon view" onclick="viewBooking(${bidJs})" title="View">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <button class="btn-icon edit" onclick="editBooking(${index})" title="Edit">
+                    <button class="btn-icon edit" onclick="editBooking(${bidJs})" title="Edit">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-icon delete" onclick="deleteBooking(${index})" title="Delete">
+                    <button class="btn-icon delete" onclick="deleteBooking(${bidJs})" title="Delete">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 }
 
 function getStatusBadgeClass(status) {
@@ -260,15 +326,14 @@ function getStatusBadgeClass(status) {
     }
 }
 
-function viewBooking(index) {
+function viewBooking(bookingId) {
     const bookings = getBookings();
-    const booking = bookings[index];
-    
+    const booking = bookings.find(b => String(b.id) === String(bookingId));
     if (!booking) return;
     
     const modal = createModal('Booking Details', `
         <div style="line-height: 1.8;">
-            <p><strong>Booking ID:</strong> #${booking.id || index + 1}</p>
+            <p><strong>Booking ID:</strong> #${booking.id || 'N/A'}</p>
             <p><strong>Customer Name:</strong> ${booking.name}</p>
             <p><strong>Email:</strong> ${booking.email}</p>
             <p><strong>Phone:</strong> ${booking.phone}</p>
@@ -289,10 +354,9 @@ function viewBooking(index) {
     document.body.appendChild(modal);
 }
 
-function editBooking(index) {
+function editBooking(bookingId) {
     const bookings = getBookings();
-    const booking = bookings[index];
-    
+    const booking = bookings.find(b => String(b.id) === String(bookingId));
     if (!booking) return;
     
     const drivers = getDrivers().filter(d => (d.status || 'active') === 'active');
@@ -321,7 +385,7 @@ function editBooking(index) {
                 </select>
             </div>
             <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end;">
-                <button type="button" class="btn btn-primary" onclick="saveBookingStatus(${index})">
+                <button type="button" class="btn btn-primary" onclick="saveBookingStatus(${JSON.stringify(String(booking.id))})">
                     <i class="fas fa-save"></i> Save
                 </button>
                 <button type="button" class="btn" style="background: var(--light); color: var(--text-dark);" onclick="closeModal()">
@@ -333,43 +397,79 @@ function editBooking(index) {
     document.body.appendChild(modal);
 }
 
-function saveBookingStatus(index) {
-    const bookings = getBookings();
+function saveBookingStatus(bookingId) {
     const status = document.getElementById('bookingStatus').value;
     const selectedDriverId = document.getElementById('bookingDriverId')?.value || '';
     const drivers = getDrivers();
     const selectedDriver = selectedDriverId ? drivers.find(d => String(d.id) === String(selectedDriverId)) : null;
 
-    bookings[index].status = status;
-    bookings[index].assignedDriverId = selectedDriver ? selectedDriver.id : null;
-    bookings[index].assignedDriverEmail = selectedDriver ? selectedDriver.email : null;
-    bookings[index].assignedDriverName = selectedDriver ? selectedDriver.name : null;
-    saveBookings(bookings);
-
-    // Keep ride requests in sync for cab bookings
-    const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
-    const requestIndex = rideRequests.findIndex(r => String(r.id) === String(bookings[index].id));
-    if (requestIndex !== -1) {
-        rideRequests[requestIndex].driverStatus = bookings[index].driverStatus || rideRequests[requestIndex].driverStatus || 'pending';
-        rideRequests[requestIndex].assignedDriverId = bookings[index].assignedDriverId;
-        rideRequests[requestIndex].assignedDriverEmail = bookings[index].assignedDriverEmail;
-        rideRequests[requestIndex].assignedDriverName = bookings[index].assignedDriverName;
-        localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
-    }
-
-    loadBookings();
-    loadDashboardData();
-    closeModal();
-}
-
-function deleteBooking(index) {
-    if (confirm('Are you sure you want to delete this booking?')) {
+    function applyLocal() {
         const bookings = getBookings();
-        bookings.splice(index, 1);
+        const idx = bookings.findIndex(b => String(b.id) === String(bookingId));
+        if (idx === -1) return;
+        bookings[idx].status = status;
+        bookings[idx].assignedDriverId = selectedDriver ? selectedDriver.id : null;
+        bookings[idx].assignedDriverEmail = selectedDriver ? selectedDriver.email : null;
+        bookings[idx].assignedDriverName = selectedDriver ? selectedDriver.name : null;
         saveBookings(bookings);
+        const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+        const requestIndex = rideRequests.findIndex(r => String(r.id) === String(bookingId));
+        if (requestIndex !== -1) {
+            rideRequests[requestIndex].assignedDriverId = bookings[idx].assignedDriverId;
+            rideRequests[requestIndex].assignedDriverEmail = bookings[idx].assignedDriverEmail;
+            rideRequests[requestIndex].assignedDriverName = bookings[idx].assignedDriverName;
+            localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
+        }
         loadBookings();
         loadDashboardData();
+        closeModal();
     }
+
+    if (adminUseApi()) {
+        InfiniTripApi.request('admin/bookings/update', {
+            method: 'POST',
+            body: {
+                id: String(bookingId),
+                status: status,
+                assignedDriverId: selectedDriverId === '' ? null : selectedDriverId
+            }
+        }).then(function (r) {
+            if (!r.ok) {
+                alert(r.error || 'Update failed');
+                return;
+            }
+            adminBookingsCache = null;
+            adminBootstrap().then(function () {
+                loadBookings();
+                loadDashboardData();
+                closeModal();
+            });
+        });
+        return;
+    }
+    applyLocal();
+}
+
+function deleteBooking(bookingId) {
+    if (!confirm('Are you sure you want to delete this booking?')) return;
+    if (adminUseApi()) {
+        InfiniTripApi.request('admin/bookings/delete', { method: 'POST', body: { id: String(bookingId) } }).then(function (r) {
+            if (!r.ok) {
+                alert(r.error || 'Delete failed');
+                return;
+            }
+            adminBookingsCache = null;
+            adminBootstrap().then(function () {
+                loadBookings();
+                loadDashboardData();
+            });
+        });
+        return;
+    }
+    const bookings = getBookings().filter(b => String(b.id) !== String(bookingId));
+    saveBookings(bookings);
+    loadBookings();
+    loadDashboardData();
 }
 
 // Users Management
@@ -384,11 +484,12 @@ function loadUsers() {
         return;
     }
     
-    usersTableBody.innerHTML = users.map((user, index) => {
+    usersTableBody.innerHTML = users.map((user) => {
         const userBookings = getBookings().filter(b => b.email === user.email).length;
+        const uid = JSON.stringify(String(user.id));
         return `
             <tr>
-                <td>#${index + 1}</td>
+                <td>#${user.id}</td>
                 <td>${user.firstName} ${user.lastName}</td>
                 <td>${user.email}</td>
                 <td>${user.phone || 'N/A'}</td>
@@ -396,10 +497,10 @@ function loadUsers() {
                 <td>${userBookings}</td>
                 <td>
                     <div class="action-buttons">
-                        <button class="btn-icon view" onclick="viewUser(${index})" title="View">
+                        <button class="btn-icon view" onclick="viewUser(${uid})" title="View">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="btn-icon delete" onclick="deleteUser(${index})" title="Delete">
+                        <button class="btn-icon delete" onclick="deleteUser(${uid})" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -409,9 +510,9 @@ function loadUsers() {
     }).join('');
 }
 
-function viewUser(index) {
+function viewUser(userId) {
     const users = getUsers();
-    const user = users[index];
+    const user = users.find(u => String(u.id) === String(userId));
     const bookings = getBookings().filter(b => b.email === user.email);
     
     const modal = createModal('User Details', `
@@ -426,14 +527,26 @@ function viewUser(index) {
     document.body.appendChild(modal);
 }
 
-function deleteUser(index) {
-    if (confirm('Are you sure you want to delete this user?')) {
-        const users = getUsers();
-        users.splice(index, 1);
-        localStorage.setItem('users', JSON.stringify(users));
-        loadUsers();
-        loadDashboardData();
+function deleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user?')) return;
+    if (adminUseApi()) {
+        InfiniTripApi.request('admin/users/delete', { method: 'POST', body: { id: userId } }).then(function (r) {
+            if (!r.ok) {
+                alert(r.error || 'Delete failed');
+                return;
+            }
+            adminUsersCache = null;
+            adminBootstrap().then(function () {
+                loadUsers();
+                loadDashboardData();
+            });
+        });
+        return;
     }
+    const users = getUsers().filter(u => String(u.id) !== String(userId));
+    localStorage.setItem('users', JSON.stringify(users));
+    loadUsers();
+    loadDashboardData();
 }
 
 // Drivers (applications & accounts)
@@ -447,13 +560,14 @@ function loadDrivers() {
         return;
     }
 
-    driversTableBody.innerHTML = drivers.map((d, index) => {
+    driversTableBody.innerHTML = drivers.map((d) => {
         const st = d.status || 'active';
         const badgeCls = driverStatusBadgeClass(st);
         const reg = d.registeredDate ? new Date(d.registeredDate).toLocaleString() : '—';
+        const did = JSON.stringify(Number(d.id));
         const approveBtn = st === 'pending'
-            ? `<button class="btn-icon view" onclick="approveDriver(${index})" title="Approve"><i class="fas fa-check"></i></button>
-               <button class="btn-icon delete" onclick="rejectDriver(${index})" title="Reject"><i class="fas fa-times"></i></button>`
+            ? `<button class="btn-icon view" onclick="approveDriver(${did})" title="Approve"><i class="fas fa-check"></i></button>
+               <button class="btn-icon delete" onclick="rejectDriver(${did})" title="Reject"><i class="fas fa-times"></i></button>`
             : '';
         return `
             <tr>
@@ -468,11 +582,11 @@ function loadDrivers() {
                 <td>${escapeAdminHtml(reg)}</td>
                 <td>
                     <div class="action-buttons">
-                        <button class="btn-icon view" onclick="viewDriver(${index})" title="View">
+                        <button class="btn-icon view" onclick="viewDriver(${did})" title="View">
                             <i class="fas fa-eye"></i>
                         </button>
                         ${approveBtn}
-                        <button class="btn-icon delete" onclick="deleteDriver(${index})" title="Delete">
+                        <button class="btn-icon delete" onclick="deleteDriver(${did})" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -482,9 +596,9 @@ function loadDrivers() {
     }).join('');
 }
 
-function viewDriver(index) {
+function viewDriver(driverId) {
     const drivers = getDrivers();
-    const d = drivers[index];
+    const d = drivers.find(x => Number(x.id) === Number(driverId));
     if (!d) return;
 
     const st = d.status || 'active';
@@ -506,31 +620,74 @@ function viewDriver(index) {
     document.body.appendChild(modal);
 }
 
-function approveDriver(index) {
+function approveDriver(driverId) {
+    if (adminUseApi()) {
+        InfiniTripApi.request('admin/drivers/status', { method: 'POST', body: { id: driverId, status: 'active' } }).then(function (r) {
+            if (!r.ok) {
+                alert(r.error || 'Update failed');
+                return;
+            }
+            adminDriversCache = null;
+            adminBootstrap().then(function () {
+                loadDrivers();
+                loadDashboardData();
+            });
+        });
+        return;
+    }
     const drivers = getDrivers();
-    if (!drivers[index]) return;
-    drivers[index].status = 'active';
-    drivers[index].approvedAt = new Date().toISOString();
+    const idx = drivers.findIndex(x => Number(x.id) === Number(driverId));
+    if (idx === -1) return;
+    drivers[idx].status = 'active';
+    drivers[idx].approvedAt = new Date().toISOString();
     saveDrivers(drivers);
     loadDrivers();
     loadDashboardData();
 }
 
-function rejectDriver(index) {
+function rejectDriver(driverId) {
     if (!confirm('Reject this driver application? They will not be able to sign in until re-added.')) return;
+    if (adminUseApi()) {
+        InfiniTripApi.request('admin/drivers/status', { method: 'POST', body: { id: driverId, status: 'rejected' } }).then(function (r) {
+            if (!r.ok) {
+                alert(r.error || 'Update failed');
+                return;
+            }
+            adminDriversCache = null;
+            adminBootstrap().then(function () {
+                loadDrivers();
+                loadDashboardData();
+            });
+        });
+        return;
+    }
     const drivers = getDrivers();
-    if (!drivers[index]) return;
-    drivers[index].status = 'rejected';
-    drivers[index].rejectedAt = new Date().toISOString();
+    const idx = drivers.findIndex(x => Number(x.id) === Number(driverId));
+    if (idx === -1) return;
+    drivers[idx].status = 'rejected';
+    drivers[idx].rejectedAt = new Date().toISOString();
     saveDrivers(drivers);
     loadDrivers();
     loadDashboardData();
 }
 
-function deleteDriver(index) {
+function deleteDriver(driverId) {
     if (!confirm('Permanently delete this driver record?')) return;
-    const drivers = getDrivers();
-    drivers.splice(index, 1);
+    if (adminUseApi()) {
+        InfiniTripApi.request('admin/drivers/delete', { method: 'POST', body: { id: driverId } }).then(function (r) {
+            if (!r.ok) {
+                alert(r.error || 'Delete failed');
+                return;
+            }
+            adminDriversCache = null;
+            adminBootstrap().then(function () {
+                loadDrivers();
+                loadDashboardData();
+            });
+        });
+        return;
+    }
+    const drivers = getDrivers().filter(x => Number(x.id) !== Number(driverId));
     saveDrivers(drivers);
     loadDrivers();
     loadDashboardData();
@@ -740,7 +897,7 @@ function loadAnalytics() {
 
 // Settings
 function loadSettings() {
-    const settings = JSON.parse(localStorage.getItem('adminSettings') || '{}');
+    const settings = adminSettingsCache || JSON.parse(localStorage.getItem('adminSettings') || '{}');
     document.getElementById('companyName').value = settings.companyName || 'INFINITRIP';
     document.getElementById('contactEmail').value = settings.contactEmail || 'info@infinitrip.com';
     document.getElementById('phone1').value = settings.phone1 || '+91 95124 95229';
@@ -756,6 +913,13 @@ function saveSettings() {
         phone2: document.getElementById('phone2').value,
         companyAddress: document.getElementById('companyAddress').value
     };
+    if (adminUseApi()) {
+        InfiniTripApi.request('admin/settings', { method: 'POST', body: { settings: settings } }).then(function (r) {
+            if (r.ok) adminSettingsCache = settings;
+            alert(r.ok ? 'Settings saved successfully!' : (r.error || 'Save failed'));
+        });
+        return;
+    }
     localStorage.setItem('adminSettings', JSON.stringify(settings));
     alert('Settings saved successfully!');
 }

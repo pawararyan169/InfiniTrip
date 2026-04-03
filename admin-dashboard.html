@@ -1132,6 +1132,7 @@
     <!-- Modal Container -->
     <div id="modalContainer"></div>
 
+    <script src="infinitrip-api.js"></script>
     <script src="admin.js"></script>
     <script>
         // Check admin authentication
@@ -1141,15 +1142,22 @@
 
         // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
-            loadDashboardData();
-            loadBookings();
-            loadUsers();
-            loadPayments();
-            loadDrivers();
-            loadDestinations();
-            loadTours();
-            loadAnalytics();
-            loadSettings();
+            var afterLoad = function () {
+                loadDashboardData();
+                loadBookings();
+                loadUsers();
+                loadPayments();
+                loadDrivers();
+                loadDestinations();
+                loadTours();
+                loadAnalytics();
+                loadSettings();
+            };
+            if (typeof adminBootstrap === 'function') {
+                adminBootstrap().then(afterLoad);
+            } else {
+                afterLoad();
+            }
             
             // Set admin initial
             const adminUsername = localStorage.getItem('adminUsername');

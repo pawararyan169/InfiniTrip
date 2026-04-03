@@ -279,29 +279,21 @@ function toggleBookingType() {
     }
 }
 
-// Booking Form Submission
+// Booking Form Submission (PHP API when InfiniTripApi is loaded; else localStorage fallback)
 const bookingForm = document.getElementById('bookingForm');
 if (bookingForm) {
-    bookingForm.addEventListener('submit', function(e) {
+    bookingForm.addEventListener('submit', function (e) {
         e.preventDefault();
-        
-        // Get form data
-        const formData = new FormData(this);
+        const formEl = this;
+        const formData = new FormData(formEl);
         const bookingData = {};
         formData.forEach((value, key) => {
             bookingData[key] = value;
         });
 
-        // Generate booking reference
-        const bookingReference = 'INF' + Date.now().toString().slice(-8);
-        
-        // Calculate total price
         const totalPrice = parseFloat(document.getElementById('totalPrice')?.textContent.replace('₹', '').replace(/,/g, '') || 0);
-        
-        // Create complete booking object
         const fullName = `${bookingData.firstName || ''} ${bookingData.lastName || ''}`.trim();
         const booking = {
-            id: bookingReference,
             bookingType: bookingData.bookingType || 'tour',
             name: fullName || bookingData.name || '',
             firstName: bookingData.firstName || '',
@@ -318,13 +310,13 @@ if (bookingForm) {
             returnTime: bookingData.returnTime || '',
             packageType: bookingData.packageType || '',
             travelDate: bookingData.pickupDate || '',
-            adults: parseInt(bookingData.adults) || 1,
-            children: parseInt(bookingData.children) || 0,
+            adults: parseInt(bookingData.adults, 10) || 1,
+            children: parseInt(bookingData.children, 10) || 0,
             transportation: bookingData.transportation || '',
             accommodation: bookingData.accommodation || '',
             totalPrice: totalPrice,
             status: 'Pending',
-            driverStatus: 'pending', // pending, accepted, declined
+            driverStatus: 'pending',
             bookingDate: new Date().toISOString(),
             address: bookingData.address || '',
             city: bookingData.city || '',
@@ -333,71 +325,90 @@ if (bookingForm) {
             emergencyName: bookingData.emergencyName || '',
             emergencyPhone: bookingData.emergencyPhone || ''
         };
-        
-        // Save to bookings array for admin panel
-        const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+
+        function finishLocal(bookingReference, savedBooking) {
+            localStorage.setItem('lastBooking', JSON.stringify({
+                reference: bookingReference,
+                data: bookingData,
+                timestamp: new Date().toISOString()
+            }));
+            const otpCode = String(Math.floor(100000 + Math.random() * 900000)).padStart(6, '0');
+            const now = Date.now();
+            localStorage.setItem(`otp_booking_${bookingReference}`, JSON.stringify({
+                code: otpCode,
+                contact: { email: savedBooking.email, phone: savedBooking.phone },
+                createdAt: new Date(now).toISOString(),
+                expiresAt: now + 5 * 60 * 1000,
+                resendCooldownUntil: now + 30 * 1000,
+                verifiedAt: null,
+                attempts: 0
+            }));
+            formEl.reset();
+            if (typeof calculatePrice === 'function') calculatePrice();
+            window.location.href = `otp.html?purpose=booking&bookingId=${encodeURIComponent(bookingReference)}`;
+        }
+
+        if (typeof InfiniTripApi !== 'undefined') {
+            InfiniTripApi.request('bookings/create', { method: 'POST', body: { booking: booking } }).then(function (r) {
+                if (!r.ok) {
+                    alert(r.error || 'Could not save booking. Check that the API and database are running.');
+                    return;
+                }
+                var bid = r.booking && r.booking.id ? r.booking.id : '';
+                if (!bid) {
+                    alert('Invalid server response.');
+                    return;
+                }
+                localStorage.setItem('lastBooking', JSON.stringify({
+                    reference: bid,
+                    data: bookingData,
+                    timestamp: new Date().toISOString()
+                }));
+                if (r.debugOtp) {
+                    try {
+                        sessionStorage.setItem('lastDebugOtp', r.debugOtp);
+                    } catch (x) { /* ignore */ }
+                }
+                formEl.reset();
+                if (typeof calculatePrice === 'function') calculatePrice();
+                window.location.href = `otp.html?purpose=booking&bookingId=${encodeURIComponent(bid)}`;
+            }).catch(function () {
+                alert('Network error talking to the server. Is XAMPP Apache running?');
+            });
+            return;
+        }
+
+        var bookingReference = 'INF' + Date.now().toString().slice(-8);
+        booking.id = bookingReference;
+        var bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
         bookings.push(booking);
         localStorage.setItem('bookings', JSON.stringify(bookings));
-        
-        // Save to ride requests for drivers (if cab booking)
         if (bookingData.bookingType === 'cab') {
-            const drivers = JSON.parse(localStorage.getItem('drivers') || '[]');
-            const eligibleDrivers = drivers.filter(d =>
-                (d.status || 'active') === 'active' &&
-                (!booking.vehicleCategory || !d.vehicleCategory || d.vehicleCategory === booking.vehicleCategory)
-            );
-            const assignedDriver = eligibleDrivers.length > 0 ? eligibleDrivers[0] : null;
-
-            const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
-            const rideRequest = {
-                ...booking,
+            var drivers = JSON.parse(localStorage.getItem('drivers') || '[]');
+            var eligibleDrivers = drivers.filter(function (d) {
+                return (d.status || 'active') === 'active' &&
+                    (!booking.vehicleCategory || !d.vehicleCategory || d.vehicleCategory === booking.vehicleCategory);
+            });
+            var assignedDriver = eligibleDrivers.length > 0 ? eligibleDrivers[0] : null;
+            var rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
+            var rideRequest = Object.assign({}, booking, {
                 requestId: 'RIDE' + Date.now().toString().slice(-8),
                 createdAt: new Date().toISOString(),
                 assignedDriverId: assignedDriver ? assignedDriver.id : null,
                 assignedDriverEmail: assignedDriver ? assignedDriver.email : null,
                 assignedDriverName: assignedDriver ? assignedDriver.name : null
-            };
+            });
             rideRequests.push(rideRequest);
             localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
-
             booking.assignedDriverId = rideRequest.assignedDriverId;
             booking.assignedDriverEmail = rideRequest.assignedDriverEmail;
             booking.assignedDriverName = rideRequest.assignedDriverName;
             booking.requestId = rideRequest.requestId;
             bookings[bookings.length - 1] = booking;
             localStorage.setItem('bookings', JSON.stringify(bookings));
-
-            // Send driver notification
             sendDriverNotification(rideRequest, assignedDriver);
         }
-        
-        // Also store as last booking for reference
-        localStorage.setItem('lastBooking', JSON.stringify({
-            reference: bookingReference,
-            data: bookingData,
-            timestamp: new Date().toISOString()
-        }));
-
-        // Generate OTP for booking confirmation and redirect
-        const otpCode = String(Math.floor(100000 + Math.random() * 900000)).padStart(6, '0');
-        const now = Date.now();
-        localStorage.setItem(`otp_booking_${bookingReference}`, JSON.stringify({
-            code: otpCode,
-            contact: { email: booking.email, phone: booking.phone },
-            createdAt: new Date(now).toISOString(),
-            expiresAt: now + 5 * 60 * 1000, // 5 minutes
-            resendCooldownUntil: now + 30 * 1000, // 30 seconds
-            verifiedAt: null,
-            attempts: 0
-        }));
-
-        // Reset form then go to OTP verification
-        this.reset();
-        if (typeof calculatePrice === 'function') {
-            calculatePrice();
-        }
-
-        window.location.href = `otp.html?purpose=booking&bookingId=${encodeURIComponent(bookingReference)}`;
+        finishLocal(bookingReference, booking);
     });
 }
 
@@ -541,275 +552,3 @@ document.addEventListener('DOMContentLoaded', function() {
         calculatePrice();
     }
 });
-
-
-
-        
-
-        // Get form data
-
-        const formData = new FormData(this);
-
-        const bookingData = {};
-
-        formData.forEach((value, key) => {
-
-            bookingData[key] = value;
-
-        });
-
-
-
-        // Generate booking reference
-
-        const bookingReference = 'INF' + Date.now().toString().slice(-8);
-
-        
-
-        // Calculate total price
-        const totalPrice = parseFloat(document.getElementById('totalPrice')?.textContent.replace('₹', '').replace(/,/g, '') || 0);
-        
-        // Create complete booking object
-        const fullName = `${bookingData.firstName || ''} ${bookingData.lastName || ''}`.trim();
-        const booking = {
-            id: bookingReference,
-            name: fullName || bookingData.name || '',
-            firstName: bookingData.firstName || '',
-            lastName: bookingData.lastName || '',
-            email: bookingData.email || '',
-            phone: bookingData.phone || '',
-            destination: bookingData.destination || '',
-            packageType: bookingData.packageType || '',
-            travelDate: bookingData.travelDate || '',
-            adults: parseInt(bookingData.adults) || 1,
-            children: parseInt(bookingData.children) || 0,
-            transportation: bookingData.transportation || '',
-            accommodation: bookingData.accommodation || '',
-            totalPrice: totalPrice,
-            status: 'Pending',
-            bookingDate: new Date().toISOString(),
-            address: bookingData.address || '',
-            city: bookingData.city || '',
-            pincode: bookingData.pincode || '',
-            specialRequirements: bookingData.specialRequirements || '',
-            emergencyName: bookingData.emergencyName || '',
-            emergencyPhone: bookingData.emergencyPhone || ''
-        };
-        
-        // Save to bookings array for admin panel
-        const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-        bookings.push(booking);
-        localStorage.setItem('bookings', JSON.stringify(bookings));
-        
-        // Also store as last booking for reference
-        localStorage.setItem('lastBooking', JSON.stringify({
-
-            reference: bookingReference,
-
-            data: bookingData,
-
-            timestamp: new Date().toISOString()
-
-        }));
-
-
-
-        // Show success modal
-
-        const modal = document.getElementById('successModal');
-
-        const bookingRefEl = document.getElementById('bookingReference');
-
-        
-
-        if (bookingRefEl) {
-
-            bookingRefEl.textContent = bookingReference;
-
-        }
-
-        
-
-        if (modal) {
-
-            // Generate OTP for booking confirmation and redirect
-            const otpCode = String(Math.floor(100000 + Math.random() * 900000)).padStart(6, '0');
-            const now = Date.now();
-            localStorage.setItem(`otp_booking_${bookingReference}`, JSON.stringify({
-                code: otpCode,
-                contact: { email: booking.email, phone: booking.phone },
-                createdAt: new Date(now).toISOString(),
-                expiresAt: now + 5 * 60 * 1000, // 5 minutes
-                resendCooldownUntil: now + 30 * 1000, // 30 seconds
-                verifiedAt: null,
-                attempts: 0
-            }));
-
-            // Reset form then go to OTP verification
-            this.reset();
-            calculatePrice();
-            window.location.href = `otp.html?purpose=booking&bookingId=${encodeURIComponent(bookingReference)}`;
-
-        }
-
-    });
-
-}
-
-
-
-// Close Modal
-
-function closeModal() {
-
-    const modal = document.getElementById('successModal');
-
-    if (modal) {
-
-        modal.style.display = 'none';
-
-    }
-
-}
-
-
-
-const closeModalBtn = document.querySelector('.close-modal');
-
-if (closeModalBtn) {
-
-    closeModalBtn.addEventListener('click', closeModal);
-
-}
-
-
-
-// Close modal when clicking outside
-
-window.addEventListener('click', function(e) {
-
-    const modal = document.getElementById('successModal');
-
-    if (e.target === modal) {
-
-        closeModal();
-
-    }
-
-});
-
-
-
-// Contact Form Submission
-
-const contactForm = document.getElementById('contactForm');
-
-if (contactForm) {
-
-    contactForm.addEventListener('submit', function(e) {
-
-        e.preventDefault();
-
-        alert('Thank you for your message! We will get back to you soon.');
-
-        this.reset();
-
-    });
-
-}
-
-
-
-// Newsletter Form Submission
-
-document.querySelectorAll('.newsletter-form').forEach(form => {
-
-    form.addEventListener('submit', function(e) {
-
-        e.preventDefault();
-
-        const email = this.querySelector('input[type="email"]').value;
-
-        if (email) {
-
-            alert('Thank you for subscribing to our newsletter!');
-
-            this.reset();
-
-        }
-
-    });
-
-});
-
-
-
-// Scroll Animation
-
-const observerOptions = {
-
-    threshold: 0.1,
-
-    rootMargin: '0px 0px -50px 0px'
-
-};
-
-
-
-const observer = new IntersectionObserver(function(entries) {
-
-    entries.forEach(entry => {
-
-        if (entry.isIntersecting) {
-
-            entry.target.style.opacity = '1';
-
-            entry.target.style.transform = 'translateY(0)';
-
-        }
-
-    });
-
-}, observerOptions);
-
-
-
-// Observe elements for scroll animation
-
-document.addEventListener('DOMContentLoaded', function() {
-
-    const animateElements = document.querySelectorAll('.feature-card, .destination-card, .testimonial-card');
-
-    animateElements.forEach(el => {
-
-        el.style.opacity = '0';
-
-        el.style.transform = 'translateY(20px)';
-
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-
-        observer.observe(el);
-
-    });
-
-});
-
-
-
-// Initialize price calculation on page load
-
-document.addEventListener('DOMContentLoaded', function() {
-
-    if (destinationSelect || packageTypeSelect || transportationSelect) {
-
-        calculatePrice();
-
-    }
-
-});
-
-
-
-
-
-

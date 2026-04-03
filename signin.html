@@ -318,120 +318,137 @@
     </div>
 
     <script src="auth.js"></script>
+    <script src="infinitrip-api.js"></script>
     <script src="admin.js"></script>
     <script>
-        // Initialize default driver accounts if not exists
         if (!localStorage.getItem('drivers')) {
-            const defaultDrivers = [
-                {
-                    id: 1,
-                    name: 'Driver One',
-                    email: 'driver1@infinitrip.in',
-                    password: 'driver123',
-                    phone: '+91 98765 43210',
-                    vehicleCategory: '3-5',
-                    licenseNumber: 'DL-123456',
-                    status: 'active'
-                },
-                {
-                    id: 2,
-                    name: 'Driver Two',
-                    email: 'driver2@infinitrip.in',
-                    password: 'driver123',
-                    phone: '+91 98765 43211',
-                    vehicleCategory: '7-8',
-                    licenseNumber: 'DL-123457',
-                    status: 'active'
-                }
-            ];
-            localStorage.setItem('drivers', JSON.stringify(defaultDrivers));
+            localStorage.setItem('drivers', JSON.stringify([
+                { id: 1, name: 'Driver One', email: 'driver1@infinitrip.in', password: 'driver123', phone: '+91 98765 43210', vehicleCategory: '3-5', licenseNumber: 'DL-123456', status: 'active' },
+                { id: 2, name: 'Driver Two', email: 'driver2@infinitrip.in', password: 'driver123', phone: '+91 98765 43211', vehicleCategory: '7-8', licenseNumber: 'DL-123457', status: 'active' }
+            ]));
         }
 
-        document.getElementById('signinForm').addEventListener('submit', function(e) {
+        document.getElementById('signinForm').addEventListener('submit', function (e) {
             e.preventDefault();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const errorDiv = document.getElementById('errorMessage');
-            
+            var username = document.getElementById('username').value.trim();
+            var password = document.getElementById('password').value;
+            var errorDiv = document.getElementById('errorMessage');
             errorDiv.classList.remove('show');
-            
-            // Try admin login first
-            if (adminLogin(username, password)) {
-                // Admin credentials matched
-                setTimeout(() => {
-                    window.location.href = 'admin-dashboard.html';
-                }, 100);
-                return;
-            }
-            
-            // Try driver login
-            const drivers = JSON.parse(localStorage.getItem('drivers') || '[]');
-            const emailLower = username.toLowerCase();
-            const driver = drivers.find(d => d.email.toLowerCase() === emailLower && d.password === password);
-            
-            if (driver) {
-                if (driver.status === 'pending') {
-                    errorDiv.textContent = 'Your driver application is pending admin approval. You will be able to sign in after approval.';
-                    errorDiv.classList.add('show');
-                    return;
-                }
-                if (driver.status === 'rejected') {
-                    errorDiv.textContent = 'Your driver application was not approved. Please contact support if you have questions.';
-                    errorDiv.classList.add('show');
-                    return;
-                }
-                // Driver credentials matched (active or legacy without status)
-                localStorage.setItem('driverSession', JSON.stringify({
-                    id: driver.id,
-                    name: driver.name,
-                    email: driver.email,
-                    loggedIn: true,
-                    loginTime: new Date().toISOString()
-                }));
-                localStorage.setItem('userRole', 'driver');
-                
-                // Redirect to driver dashboard
-                setTimeout(() => {
-                    window.location.href = 'driver-dashboard.html';
-                }, 100);
-                return;
-            }
-            
-            // Try customer/user login
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            const user = users.find(u => u.email.toLowerCase() === emailLower && u.password === password);
-            
-            if (user) {
-                // Customer credentials matched
-                if (user.verified === false) {
-                    // User exists but is not OTP-verified yet
-                    window.location.href = `otp.html?purpose=signup&userId=${encodeURIComponent(user.id)}&reason=login`;
-                    return;
-                }
 
-                const userData = {
-                    id: user.id || Date.now().toString(),
-                    email: user.email,
-                    firstName: user.firstName || '',
-                    lastName: user.lastName || '',
-                    phone: user.phone || '',
-                    username: user.email?.split('@')[0] || 'User'
-                };
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-                localStorage.setItem('userRole', 'user');
-                
-                // Redirect to home or booking page
-                const redirectUrl = new URLSearchParams(window.location.search).get('redirect');
-                // Add small delay to ensure localStorage is saved
-                setTimeout(() => {
-                    window.location.href = redirectUrl || 'index.html';
-                }, 100);
+            function localFlow() {
+                if (adminLogin(username, password)) {
+                    setTimeout(function () { window.location.href = 'admin-dashboard.html'; }, 100);
+                    return;
+                }
+                var drivers = JSON.parse(localStorage.getItem('drivers') || '[]');
+                var emailLower = username.toLowerCase();
+                var driver = drivers.find(function (d) { return d.email.toLowerCase() === emailLower && d.password === password; });
+                if (driver) {
+                    if (driver.status === 'pending') {
+                        errorDiv.textContent = 'Your driver application is pending admin approval. You will be able to sign in after approval.';
+                        errorDiv.classList.add('show');
+                        return;
+                    }
+                    if (driver.status === 'rejected') {
+                        errorDiv.textContent = 'Your driver application was not approved. Please contact support if you have questions.';
+                        errorDiv.classList.add('show');
+                        return;
+                    }
+                    localStorage.setItem('driverSession', JSON.stringify({
+                        id: driver.id, name: driver.name, email: driver.email, loggedIn: true, loginTime: new Date().toISOString()
+                    }));
+                    localStorage.setItem('userRole', 'driver');
+                    setTimeout(function () { window.location.href = 'driver-dashboard.html'; }, 100);
+                    return;
+                }
+                var users = JSON.parse(localStorage.getItem('users') || '[]');
+                var user = users.find(function (u) { return u.email.toLowerCase() === emailLower && u.password === password; });
+                if (user) {
+                    if (user.verified === false) {
+                        window.location.href = 'otp.html?purpose=signup&userId=' + encodeURIComponent(user.id) + '&reason=login';
+                        return;
+                    }
+                    localStorage.setItem('currentUser', JSON.stringify({
+                        id: user.id || String(Date.now()),
+                        email: user.email,
+                        firstName: user.firstName || '',
+                        lastName: user.lastName || '',
+                        phone: user.phone || '',
+                        username: (user.email && user.email.split('@')[0]) || 'User'
+                    }));
+                    localStorage.setItem('userRole', 'user');
+                    var redirectUrl = new URLSearchParams(window.location.search).get('redirect');
+                    setTimeout(function () { window.location.href = redirectUrl || 'index.html'; }, 100);
+                    return;
+                }
+                errorDiv.textContent = 'Invalid credentials. Please check your email/username and password.';
+                errorDiv.classList.add('show');
+            }
+
+            if (typeof InfiniTripApi === 'undefined') {
+                localFlow();
                 return;
             }
-            
-            // No credentials matched
-            errorDiv.textContent = 'Invalid credentials. Please check your email/username and password.';
-            errorDiv.classList.add('show');
+
+            InfiniTripApi.request('auth/unified-login', { method: 'POST', body: { username: username, password: password } })
+                .then(function (r) {
+                    if (r.ok && r.role === 'admin') {
+                        localStorage.setItem('adminLoggedIn', 'true');
+                        localStorage.setItem('adminUsername', r.username || 'admin');
+                        localStorage.setItem('userRole', 'admin');
+                        window.location.href = 'admin-dashboard.html';
+                        return;
+                    }
+                    if (r.ok && r.role === 'driver' && r.driver) {
+                        localStorage.setItem('driverSession', JSON.stringify({
+                            id: r.driver.id,
+                            name: r.driver.name,
+                            email: r.driver.email,
+                            loggedIn: true,
+                            loginTime: new Date().toISOString()
+                        }));
+                        localStorage.setItem('userRole', 'driver');
+                        window.location.href = 'driver-dashboard.html';
+                        return;
+                    }
+                    if (r.ok && r.role === 'user' && r.user) {
+                        localStorage.setItem('currentUser', JSON.stringify({
+                            id: r.user.id,
+                            email: r.user.email,
+                            firstName: r.user.firstName || '',
+                            lastName: r.user.lastName || '',
+                            phone: r.user.phone || '',
+                            username: (r.user.email && r.user.email.split('@')[0]) || 'User'
+                        }));
+                        localStorage.setItem('userRole', 'user');
+                        var ru = new URLSearchParams(window.location.search).get('redirect');
+                        window.location.href = ru || 'index.html';
+                        return;
+                    }
+                    if (r.error === 'unverified' && r.userId) {
+                        window.location.href = 'otp.html?purpose=signup&userId=' + encodeURIComponent(r.userId) + '&reason=login';
+                        return;
+                    }
+                    if (r.error === 'pending') {
+                        errorDiv.textContent = r.message || 'Your driver application is pending approval.';
+                        errorDiv.classList.add('show');
+                        return;
+                    }
+                    if (r.error === 'rejected') {
+                        errorDiv.textContent = r.message || 'Your driver application was not approved.';
+                        errorDiv.classList.add('show');
+                        return;
+                    }
+                    if (r.error && r.error !== 'Invalid credentials') {
+                        errorDiv.textContent = r.error;
+                        errorDiv.classList.add('show');
+                        return;
+                    }
+                    localFlow();
+                })
+                .catch(function () {
+                    localFlow();
+                });
         });
     </script>
 </body>

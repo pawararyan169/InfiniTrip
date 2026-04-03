@@ -497,7 +497,23 @@
         </div>
     </div>
 
+    <script src="infinitrip-api.js"></script>
     <script>
+        var __driverRidesApi = null;
+        var __driverNotifApi = null;
+
+        function refreshDriverDataFromApi() {
+            if (typeof InfiniTripApi === 'undefined') {
+                return Promise.resolve();
+            }
+            return InfiniTripApi.request('driver/rides', { method: 'GET' }).then(function (r) {
+                if (r.ok) __driverRidesApi = r.rides;
+                return InfiniTripApi.request('driver/notifications', { method: 'GET' });
+            }).then(function (n) {
+                if (n && n.ok) __driverNotifApi = n.notifications;
+            });
+        }
+
         // Check if driver is logged in
         function checkDriverLogin() {
             const session = localStorage.getItem('driverSession');
@@ -515,8 +531,15 @@
             }
         }
 
-        // Logout function
         function logout() {
+            if (typeof InfiniTripApi !== 'undefined') {
+                InfiniTripApi.request('auth/logout', { method: 'POST', body: {} }).finally(function () {
+                    localStorage.removeItem('driverSession');
+                    localStorage.removeItem('userRole');
+                    window.location.href = 'signin.html';
+                });
+                return;
+            }
             localStorage.removeItem('driverSession');
             localStorage.removeItem('userRole');
             window.location.href = 'signin.html';
@@ -534,6 +557,9 @@
         function getVisibleRideRequestsForDriver() {
             const session = checkDriverLogin();
             if (!session) return [];
+            if (typeof InfiniTripApi !== 'undefined' && Array.isArray(__driverRidesApi)) {
+                return __driverRidesApi;
+            }
             const all = JSON.parse(localStorage.getItem('rideRequests') || '[]');
             return all.filter(r => {
                 const assignedToSessionId = r.assignedDriverId != null && String(r.assignedDriverId) === String(session.id);
@@ -547,15 +573,20 @@
             const container = document.getElementById('notificationsContainer');
             if (!session || !container) return;
 
-            const notifications = JSON.parse(localStorage.getItem('driverNotifications') || '[]');
-            const visible = notifications
-                .filter(n => {
-                    const byId = n.assignedDriverId != null && String(n.assignedDriverId) === String(session.id);
-                    const byEmail = n.assignedDriverEmail && session.email && String(n.assignedDriverEmail).toLowerCase() === String(session.email).toLowerCase();
-                    return byId || byEmail;
-                })
-                .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0))
-                .slice(0, 8);
+            let visible;
+            if (typeof InfiniTripApi !== 'undefined' && Array.isArray(__driverNotifApi)) {
+                visible = __driverNotifApi.slice(0, 8);
+            } else {
+                const notifications = JSON.parse(localStorage.getItem('driverNotifications') || '[]');
+                visible = notifications
+                    .filter(n => {
+                        const byId = n.assignedDriverId != null && String(n.assignedDriverId) === String(session.id);
+                        const byEmail = n.assignedDriverEmail && session.email && String(n.assignedDriverEmail).toLowerCase() === String(session.email).toLowerCase();
+                        return byId || byEmail;
+                    })
+                    .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0))
+                    .slice(0, 8);
+            }
 
             if (!visible.length) {
                 container.innerHTML = `
@@ -706,49 +737,72 @@
             document.getElementById('declinedCount').textContent = declined;
         }
 
-        // Accept ride
         function acceptRide(requestId) {
+            if (typeof InfiniTripApi !== 'undefined') {
+                InfiniTripApi.request('driver/ride-status', {
+                    method: 'POST',
+                    body: { requestId: String(requestId), status: 'accepted' }
+                }).then(function (r) {
+                    if (!r.ok) {
+                        alert(r.error || 'Could not update ride');
+                        return;
+                    }
+                    refreshDriverDataFromApi().then(function () {
+                        loadRideRequests();
+                        alert('Ride accepted successfully!');
+                    });
+                });
+                return;
+            }
             const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
             const rideIndex = rideRequests.findIndex(r => String(r.requestId || r.id) === String(requestId));
             if (rideIndex !== -1) {
                 rideRequests[rideIndex].driverStatus = 'accepted';
                 rideRequests[rideIndex].acceptedAt = new Date().toISOString();
                 localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
-
-                // Also update in bookings if exists
                 const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
                 const booking = bookings.find(b => b.id === rideRequests[rideIndex].id);
                 if (booking) {
                     booking.driverStatus = 'accepted';
                     localStorage.setItem('bookings', JSON.stringify(bookings));
                 }
-
                 loadRideRequests();
                 alert('Ride accepted successfully!');
             }
         }
 
-        // Decline ride
         function declineRide(requestId) {
             if (!confirm('Are you sure you want to decline this ride?')) {
                 return;
             }
-
+            if (typeof InfiniTripApi !== 'undefined') {
+                InfiniTripApi.request('driver/ride-status', {
+                    method: 'POST',
+                    body: { requestId: String(requestId), status: 'declined' }
+                }).then(function (r) {
+                    if (!r.ok) {
+                        alert(r.error || 'Could not update ride');
+                        return;
+                    }
+                    refreshDriverDataFromApi().then(function () {
+                        loadRideRequests();
+                        alert('Ride declined.');
+                    });
+                });
+                return;
+            }
             const rideRequests = JSON.parse(localStorage.getItem('rideRequests') || '[]');
             const rideIndex = rideRequests.findIndex(r => String(r.requestId || r.id) === String(requestId));
             if (rideIndex !== -1) {
                 rideRequests[rideIndex].driverStatus = 'declined';
                 rideRequests[rideIndex].declinedAt = new Date().toISOString();
                 localStorage.setItem('rideRequests', JSON.stringify(rideRequests));
-
-                // Also update in bookings if exists
                 const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
                 const booking = bookings.find(b => b.id === rideRequests[rideIndex].id);
                 if (booking) {
                     booking.driverStatus = 'declined';
                     localStorage.setItem('bookings', JSON.stringify(bookings));
                 }
-
                 loadRideRequests();
                 alert('Ride declined.');
             }
@@ -771,18 +825,22 @@
             }
         }
 
-        // Initialize dashboard
         document.addEventListener('DOMContentLoaded', function() {
             loadDriverInfo();
-            loadRideRequests();
-            loadDriverNotifications();
-            updateDriverNavigation();
-            
-            // Refresh every 30 seconds
-            setInterval(() => {
+            function refreshAll() {
+                refreshDriverDataFromApi().then(function () {
+                    loadRideRequests();
+                    loadDriverNotifications();
+                });
+            }
+            if (typeof InfiniTripApi !== 'undefined') {
+                refreshAll();
+            } else {
                 loadRideRequests();
                 loadDriverNotifications();
-            }, 30000);
+            }
+            updateDriverNavigation();
+            setInterval(refreshAll, 30000);
         });
     </script>
     <script src="script.js"></script>

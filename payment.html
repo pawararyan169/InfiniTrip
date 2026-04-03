@@ -334,6 +334,7 @@
     <script src="script.js"></script>
     <script src="auth.js"></script>
     <script src="cart.js"></script>
+    <script src="infinitrip-api.js"></script>
     <script>
         // Render checkout page
         function renderCheckout() {
@@ -517,108 +518,135 @@
             const city = document.getElementById('city').value.trim();
             const pincode = document.getElementById('pincode').value.trim();
 
-            // Link every payment to a booking record (create one if needed)
             const params = new URLSearchParams(window.location.search);
             let bookingId = params.get('bookingId');
-            const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-            let linkedBooking = bookingId ? bookings.find(b => String(b.id) === String(bookingId)) : null;
 
-            if (!linkedBooking) {
-                bookingId = `PAYBOOK${Date.now().toString().slice(-8)}`;
-                linkedBooking = {
-                    id: bookingId,
-                    bookingType: 'cart',
-                    name: `${firstName} ${lastName}`.trim(),
+            const items = cart.map(item => ({
+                name: item.name,
+                type: item.type,
+                quantity: item.quantity,
+                unitPrice: item.price,
+                lineTotal: item.price * item.quantity
+            }));
+
+            function payLocal() {
+                const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
+                let linkedBooking = bookingId ? bookings.find(b => String(b.id) === String(bookingId)) : null;
+                if (!linkedBooking) {
+                    bookingId = `PAYBOOK${Date.now().toString().slice(-8)}`;
+                    linkedBooking = {
+                        id: bookingId,
+                        bookingType: 'cart',
+                        name: `${firstName} ${lastName}`.trim(),
+                        firstName,
+                        lastName,
+                        email,
+                        phone,
+                        destination: 'Cart Checkout',
+                        packageType: 'Cart',
+                        pickupLocation: address,
+                        dropLocation: city,
+                        pickupDate: new Date().toISOString().split('T')[0],
+                        pickupTime: '',
+                        returnDate: '',
+                        returnTime: '',
+                        adults: 1,
+                        children: 0,
+                        transportation: '',
+                        accommodation: '',
+                        totalPrice: finalTotal,
+                        status: 'Pending',
+                        driverStatus: '',
+                        bookingDate: new Date().toISOString(),
+                        address,
+                        city,
+                        pincode,
+                        specialRequirements: 'Created from cart checkout',
+                        emergencyName: '',
+                        emergencyPhone: '',
+                        cartItems: cart.map(item => ({
+                            id: item.id,
+                            type: item.type,
+                            name: item.name,
+                            quantity: item.quantity,
+                            unitPrice: item.price,
+                            lineTotal: item.price * item.quantity
+                        }))
+                    };
+                    bookings.push(linkedBooking);
+                }
+                let payments = [];
+                try {
+                    payments = JSON.parse(localStorage.getItem('payments') || '[]');
+                } catch (e) {
+                    payments = [];
+                }
+                const payId = payments.length ? Math.max(...payments.map(p => Number(p.id) || 0), 0) + 1 : 1;
+                payments.push({
+                    id: payId,
+                    bookingId,
+                    status: 'completed',
+                    paymentMethod,
+                    amount: finalTotal,
+                    currency: 'INR',
                     firstName,
                     lastName,
                     email,
                     phone,
-                    destination: 'Cart Checkout',
-                    packageType: 'Cart',
-                    pickupLocation: address,
-                    dropLocation: city,
-                    pickupDate: new Date().toISOString().split('T')[0],
-                    pickupTime: '',
-                    returnDate: '',
-                    returnTime: '',
-                    adults: 1,
-                    children: 0,
-                    transportation: '',
-                    accommodation: '',
-                    totalPrice: finalTotal,
-                    status: 'Pending',
-                    driverStatus: '',
-                    bookingDate: new Date().toISOString(),
                     address,
                     city,
                     pincode,
-                    specialRequirements: 'Created from cart checkout',
-                    emergencyName: '',
-                    emergencyPhone: '',
-                    cartItems: cart.map(item => ({
-                        id: item.id,
-                        type: item.type,
-                        name: item.name,
-                        quantity: item.quantity,
-                        unitPrice: item.price,
-                        lineTotal: item.price * item.quantity
-                    }))
-                };
-                bookings.push(linkedBooking);
+                    items: items,
+                    paidAt: new Date().toISOString()
+                });
+                localStorage.setItem('payments', JSON.stringify(payments));
+                const bookingIndex = bookings.findIndex(b => String(b.id) === String(bookingId));
+                if (bookingIndex !== -1) {
+                    bookings[bookingIndex].status = 'Confirmed';
+                    bookings[bookingIndex].paymentStatus = 'paid';
+                    bookings[bookingIndex].paymentId = payId;
+                    bookings[bookingIndex].paymentMethod = paymentMethod;
+                    bookings[bookingIndex].paidAmount = finalTotal;
+                    bookings[bookingIndex].paidAt = new Date().toISOString();
+                    localStorage.setItem('bookings', JSON.stringify(bookings));
+                }
+                alert(`Payment of ₹${finalTotal.toLocaleString()} processed successfully!\n\nYour booking has been confirmed. You will receive a confirmation email shortly.`);
+                clearCart();
+                window.location.href = 'index.html';
             }
 
-            let payments = [];
-            try {
-                payments = JSON.parse(localStorage.getItem('payments') || '[]');
-            } catch (e) {
-                payments = [];
-            }
-            const payId = payments.length ? Math.max(...payments.map(p => Number(p.id) || 0), 0) + 1 : 1;
-            payments.push({
-                id: payId,
-                bookingId,
-                status: 'completed',
-                paymentMethod,
-                amount: finalTotal,
-                currency: 'INR',
-                firstName,
-                lastName,
-                email,
-                phone,
-                address,
-                city,
-                pincode,
-                items: cart.map(item => ({
-                    name: item.name,
-                    type: item.type,
-                    quantity: item.quantity,
-                    unitPrice: item.price,
-                    lineTotal: item.price * item.quantity
-                })),
-                paidAt: new Date().toISOString()
-            });
-            localStorage.setItem('payments', JSON.stringify(payments));
-
-            // Update linked booking after successful payment write
-            const bookingIndex = bookings.findIndex(b => String(b.id) === String(bookingId));
-            if (bookingIndex !== -1) {
-                bookings[bookingIndex].status = 'Confirmed';
-                bookings[bookingIndex].paymentStatus = 'paid';
-                bookings[bookingIndex].paymentId = payId;
-                bookings[bookingIndex].paymentMethod = paymentMethod;
-                bookings[bookingIndex].paidAmount = finalTotal;
-                bookings[bookingIndex].paidAt = new Date().toISOString();
-                localStorage.setItem('bookings', JSON.stringify(bookings));
+            if (typeof InfiniTripApi !== 'undefined') {
+                InfiniTripApi.request('payments/create', {
+                    method: 'POST',
+                    body: {
+                        bookingId: bookingId || undefined,
+                        amount: finalTotal,
+                        paymentMethod: paymentMethod,
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        phone: phone,
+                        address: address,
+                        city: city,
+                        pincode: pincode,
+                        currency: 'INR',
+                        items: items
+                    }
+                }).then(function (r) {
+                    if (!r.ok) {
+                        alert(r.error || 'Payment could not be recorded. Check API / database.');
+                        return;
+                    }
+                    alert(`Payment of ₹${finalTotal.toLocaleString()} processed successfully!\n\nYour booking has been confirmed. You will receive a confirmation email shortly.`);
+                    clearCart();
+                    window.location.href = 'index.html';
+                }).catch(function () {
+                    payLocal();
+                });
+                return;
             }
 
-            // Show success message
-            alert(`Payment of ₹${finalTotal.toLocaleString()} processed successfully!\n\nYour booking has been confirmed. You will receive a confirmation email shortly.`);
-            
-            // Clear cart
-            clearCart();
-            
-            // Redirect to home
-            window.location.href = 'index.html';
+            payLocal();
         }
         
         // Update payment summary

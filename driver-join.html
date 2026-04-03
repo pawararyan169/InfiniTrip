@@ -193,6 +193,7 @@
     </section>
 
     <script src="script.js"></script>
+    <script src="infinitrip-api.js"></script>
     <script>
         (function () {
             const form = document.getElementById('driverJoinForm');
@@ -242,6 +243,31 @@
                     drivers = JSON.parse(localStorage.getItem('drivers') || '[]');
                 } catch (x) {
                     drivers = [];
+                }
+
+                if (typeof InfiniTripApi !== 'undefined') {
+                    InfiniTripApi.request('drivers/apply', {
+                        method: 'POST',
+                        body: {
+                            name: name,
+                            email: email,
+                            phone: phone,
+                            password: password,
+                            licenseNumber: licenseNumber,
+                            vehicleCategory: vehicleCategory,
+                            vehicleNumber: vehicleNumber || ''
+                        }
+                    }).then(function (r) {
+                        if (!r.ok) {
+                            showError(r.error || 'Could not submit application.');
+                            return;
+                        }
+                        showSuccess('Application submitted. An admin will review it. You can sign in once your account is approved.');
+                        form.reset();
+                    }).catch(function () {
+                        showError('Cannot reach server. Ensure XAMPP Apache and MySQL are running.');
+                    });
+                    return;
                 }
 
                 if (drivers.some(d => (d.email || '').toLowerCase() === email)) {

@@ -328,40 +328,61 @@ if (signupForm) {
             return;
         }
         
-        // Check if user already exists
+        if (typeof InfiniTripApi !== 'undefined') {
+            InfiniTripApi.request('auth/register', {
+                method: 'POST',
+                body: {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    phone: phone,
+                    password: password
+                }
+            }).then(function (r) {
+                if (!r.ok) {
+                    showError(r.error || 'Registration failed');
+                    return;
+                }
+                if (r.debugOtp) {
+                    try {
+                        sessionStorage.setItem('lastDebugOtp', r.debugOtp);
+                    } catch (x) { /* ignore */ }
+                }
+                showSuccess('Account created. OTP sent for verification. Redirecting...');
+                setTimeout(function () {
+                    window.location.href = 'otp.html?purpose=signup&userId=' + encodeURIComponent(r.user.id);
+                }, 600);
+            }).catch(function () {
+                showError('Cannot reach server. Start XAMPP Apache and MySQL, then try again.');
+            });
+            return;
+        }
+
         const users = JSON.parse(localStorage.getItem('users'));
         const existingUser = users.find(user => user.email === email);
-        
         if (existingUser) {
             showError('An account with this email already exists');
             return;
         }
-        
-        // Create new user
         const newUser = {
             id: Date.now().toString(),
             firstName: firstName,
             lastName: lastName,
             email: email,
             phone: phone,
-            password: password, // In production, this should be hashed
+            password: password,
             createdAt: new Date().toISOString(),
             registeredDate: new Date().toISOString(),
             verified: false,
             verifiedAt: null
         };
-        
-        // Add user to storage
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users));
-        
-        // Generate OTP and redirect to OTP verification
         otpStoreOtp({
             purpose: 'signup',
             targetId: newUser.id,
             contact: { email: newUser.email, phone: newUser.phone }
         });
-
         showSuccess('Account created. OTP sent for verification. Redirecting...');
         setTimeout(() => {
             window.location.href = `otp.html?purpose=signup&userId=${encodeURIComponent(newUser.id)}`;
@@ -454,18 +475,21 @@ function getCurrentUser() {
     return userStr ? JSON.parse(userStr) : null;
 }
 
-// Logout function
 function logout() {
-    // Clear all session data
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('rememberMe');
-    localStorage.removeItem('driverSession');
-    localStorage.removeItem('adminLoggedIn');
-    localStorage.removeItem('adminUsername');
-    localStorage.removeItem('userRole');
-    
-    // Redirect to home page
-    window.location.href = 'index.html';
+    function clearAndGo() {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('rememberMe');
+        localStorage.removeItem('driverSession');
+        localStorage.removeItem('adminLoggedIn');
+        localStorage.removeItem('adminUsername');
+        localStorage.removeItem('userRole');
+        window.location.href = 'index.html';
+    }
+    if (typeof InfiniTripApi !== 'undefined') {
+        InfiniTripApi.request('auth/logout', { method: 'POST', body: {} }).finally(clearAndGo);
+        return;
+    }
+    clearAndGo();
 }
 
 // Navigation update flag and debounce timer
